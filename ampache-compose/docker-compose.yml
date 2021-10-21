@@ -1,0 +1,58 @@
+version: '3'
+services:
+  web:
+    container_name: ampache
+    image: rasampache:1.0
+    restart: always
+    volumes:
+      - media:/media
+    networks:
+      ampache-bridge:
+        ipv4_address: 172.16.241.2
+  db:
+    container_name: mysql_ampache
+    image: hypriot/rpi-mysql:arm-5.5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${PASSWORD}
+    networks:
+      ampache-bridge:
+        ipv4_address: 172.16.241.4
+  reverseProxy:
+    container_name: nginx_ampache
+    image: nginx
+    restart: always
+    ports:
+      - "4446:4446"
+    volumes:
+      - certs:/etc/nginx/certs/
+      - sites:/etc/nginx/conf.d/
+    networks:
+      ampache-bridge:
+        ipv4_address: 172.16.241.3
+volumes:
+  media:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/media/javi/disco/musica'
+  certs:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/javi/docker/ampache-compose/nginx_volume/certs'
+  sites:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/home/javi/docker/ampache-compose/nginx_volume/conf.d'
+networks:
+  ampache-bridge:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.241.0/24

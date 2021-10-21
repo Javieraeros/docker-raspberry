@@ -1,0 +1,12 @@
+version : '3'
+services:
+  web:
+    container_name: transmission
+    build: .
+    restart: always
+    volumes:
+      - "/media/javi/disco/transmission/downloaded/:/downloaded"
+      - "/media/javi/disco/transmission/downloading/:/downloading"
+    tty: true
+    ports:
+      - "4444:8080"

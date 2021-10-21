@@ -1,0 +1,70 @@
+version: '3'
+services:
+  web:
+#    user: www-data:1000
+    container_name: nextcloud
+    image: nextcloud
+    restart: always
+    ports:
+      - "4445:80"
+    volumes:
+      - /media/javi/disco/nextcloud:/var/www/html
+    environment:
+      - POSTGRES_HOST=postgre_nextcloud
+      - POSTGRES_DB=${DB}
+      - POSTGRES_USER=${USER}
+      - POSTGRES_PASSWORD=${PASSWORD}
+    networks:
+      nextcloud-bridge:
+        ipv4_address: 172.16.240.2
+  db:
+    container_name: postgre_nextcloud
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_USER=${USER}
+      - POSTGRES_DB=${DB}
+    volumes:
+      - /media/javi/disco/nextcloud_postgre:/var/lib/postgresql/data
+    networks:
+      nextcloud-bridge:
+        ipv4_address: 172.16.240.4
+#  reverseProxy:
+#    container_name: nginx_nextcloud
+#    image: nginx
+#    restart: always
+#    ports:
+#      - "4445:4445"
+#    volumes:
+#      - certs:/etc/nginx/certs/
+#      - sites:/etc/nginx/conf.d/
+#    networks:
+#      nextcloud-bridge:
+#        ipv4_address: 172.16.240.3
+#volumes:
+#  nextcloud:
+#    driver: local
+#    driver_opts:
+#      type: 'none'
+#      o: 'bind'
+#      device: '/media/javi/disco/nextcloud'
+#  certs:
+#    driver: local
+#    driver_opts:
+#      type: 'none'
+#      o: 'bind'
+#      device: '/home/javi/docker/nextcloud-compose/nginx_volume/certs'
+#  sites:
+#    driver: local
+#    driver_opts:
+#      type: 'none'
+#      o: 'bind'
+#      device: '/home/javi/docker/nextcloud-compose/nginx_volume/conf.d'
+networks:
+  nextcloud-bridge:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.240.0/24

@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  supysonic:
+    build: . 
+    container_name: supysonic
+    restart: unless-stopped
+    environment:
+      - USER=${USER_FD}
+      - PASSWORD=${PASSWORD_FD}
+    networks:
+      - proxy
+    ports:
+      - 8082:8080
+    volumes:
+      - /media/javi/disco/musica/supysonic:/var/lib/supysonic
+      - /media/javi/disco/musica/carnavales/:/media
+
+networks:
+  proxy:
+    external: true

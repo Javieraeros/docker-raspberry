@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  raspibot:
+    build: . 
+    container_name: raspibot
+    network_mode: host
+    restart: unless-stopped
+    devices:
+      - /dev/vchiq
+      - /dev/vcsm-cma
+    volumes:
+      - ./RaspiBot:/home/app/
+      - /boot:/boot:ro
+      - /sys:/dockerhost/sys:ro
+      - /etc:/dockerhost/etc:ro
+      - /proc:/dockerhost/proc:ro
+      - /usr/lib:/dockerhost/usr/lib:ro
+      - /media/javi/disco:/dev/sda1:ro
+      - /home/javi/.ssh:/home/app/.ssh:ro
+    environment:
+      - BOT_ID=${BOT_ID}
+    command: bash -c "
+      cd /home/app &&
+      eval `ssh-agent` &&
+      ssh-add .ssh/id_rsa &&
+      pip install pyTelegramBotAPI &&
+      python /home/app/raspibot.py"
