@@ -1,7 +1,6 @@
 version: '3'
 services:
   web:
-#    user: www-data:1000
     container_name: nextcloud
     image: nextcloud
     restart: always

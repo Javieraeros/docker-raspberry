@@ -4,10 +4,11 @@ services:
   koel:
     image: hyzual/koel
     container_name: koel
+    restart: always
     depends_on:
       - database
     ports:
-      - 8083:80
+      - "8083:80"
     environment:
       - DB_CONNECTION=pgsql
       - DB_HOST=database
@@ -17,6 +18,12 @@ services:
     volumes:
       - /media/javi/disco/musica/carnavales:/music
       - search_index:/var/www/html/storage/search-indexes
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.koel.rule=Host(`koel.fjruiz.duckdns.org`,`koel.raspberrypi.local`)"
+      - "traefik.http.routers.koel.entrypoints=web"
+#      - "traefik.http.routers.koel.rule=Path(`/`)"
+      - "traefik.http.services.koel-traefik.loadbalancer.server.port=80"
   database:
     image: postgres
     volumes:
@@ -26,12 +33,11 @@ services:
       - POSTGRES_USER=${USERNAME}
       - POSTGRES_PASSWORD=${PASSWORD}
 
+networks:
+  default:
+    external:
+      name: traefik-compose_default
+
 volumes:
-  db:
-    driver: local
-  music:
-    driver: local
-  covers:
-    driver: local
   search_index:
     driver: local

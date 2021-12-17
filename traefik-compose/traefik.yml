@@ -1,0 +1,9 @@
+entryPoints:
+  web:
+    address: :80
+api:
+  insecure: true
+providers:
+  docker:
+    exposedByDefault: false
+    endpoint: "unix:///var/run/docker.sock"

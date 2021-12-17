@@ -5,6 +5,6 @@ services:
     container_name: plex
     network_mode: host
     volumes:
-      - /media/javi/disco/plex/config:/root/Library jaymoulin/plex
+      - /media/javi/disco/plex/config:/root/Library
       - /media/javi/disco/plex/pelis:/media
     restart: unless-stopped
