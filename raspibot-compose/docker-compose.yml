@@ -20,6 +20,8 @@ services:
       - /home/javi/.ssh:/home/app/.ssh:ro
     environment:
       - BOT_ID=${BOT_ID}
+    labels:
+      - com.centurylinklabs.watchtower.enable="true"
     command: bash -c "
       cd /home/app &&
       eval `ssh-agent` &&

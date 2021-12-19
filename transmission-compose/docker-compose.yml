@@ -14,8 +14,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission.rule=Host(`transmission.fjruiz.duckdns.org`)"
       - "traefik.http.routers.transmission.entrypoints=web"
-#      - "traefik.http.routers.transmission.rule=Path(`/`)"
       - "traefik.http.services.transmission-traefik.loadbalancer.server.port=8080"
+      - com.centurylinklabs.watchtower.enable="true"
 networks:
   default:
     external:

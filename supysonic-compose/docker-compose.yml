@@ -17,8 +17,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.supysonic.rule=Host(`supysonic.fjruiz.duckdns.org`)"
       - "traefik.http.routers.supysonic.entrypoints=web"
-#      - "traefik.http.routers.koel.rule=Path(`/`)"
       - "traefik.http.services.supysonic-traefik.loadbalancer.server.port=8080"
+      - com.centurylinklabs.watchtower.enable="true"
 
 networks:
   default:

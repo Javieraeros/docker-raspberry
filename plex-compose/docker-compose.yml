@@ -8,3 +8,5 @@ services:
       - /media/javi/disco/plex/config:/root/Library
       - /media/javi/disco/plex/pelis:/media
     restart: unless-stopped
+    labels:
+      - com.centurylinklabs.watchtower.enable="true"

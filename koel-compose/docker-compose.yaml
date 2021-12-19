@@ -22,8 +22,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.koel.rule=Host(`koel.fjruiz.duckdns.org`,`koel.raspberrypi.local`)"
       - "traefik.http.routers.koel.entrypoints=web"
-#      - "traefik.http.routers.koel.rule=Path(`/`)"
       - "traefik.http.services.koel-traefik.loadbalancer.server.port=80"
+      - com.centurylinklabs.watchtower.enable="true"
   database:
     image: postgres
     volumes:

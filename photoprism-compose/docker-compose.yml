@@ -90,6 +90,8 @@ services:
       # - "~/Import:/photoprism/import"
       # Permanent storage for settings, index & sidecar files (DON'T REMOVE):
       - "/media/javi/disco/photoprism/storage:/photoprism/storage"
+    labels:
+      - com.centurylinklabs.watchtower.enable="true"
 
   mariadb:
     image: arm64v8/mariadb:10.5
