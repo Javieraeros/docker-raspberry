@@ -13,6 +13,8 @@ services:
       - POSTGRES_DB=${DB}
       - POSTGRES_USER=${USER}
       - POSTGRES_PASSWORD=${PASSWORD}
+    labels:
+      - com.centurylinklabs.watchtower.enable="true"
     networks:
       nextcloud-bridge:
         ipv4_address: 172.16.240.2

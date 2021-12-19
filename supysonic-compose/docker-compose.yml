@@ -15,7 +15,7 @@ services:
       - /media/javi/disco/musica/carnavales/:/media
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.supysonic.rule=Host(`supysonic.fjruiz.duckdns.org`)"
+      - "traefik.http.routers.supysonic.rule=Host(${HOST})"
       - "traefik.http.routers.supysonic.entrypoints=web"
       - "traefik.http.services.supysonic-traefik.loadbalancer.server.port=8080"
       - com.centurylinklabs.watchtower.enable="true"

@@ -12,7 +12,7 @@ services:
       - "4444:8080"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.transmission.rule=Host(`transmission.fjruiz.duckdns.org`)"
+      - "traefik.http.routers.transmission.rule=Host(${HOST})"
       - "traefik.http.routers.transmission.entrypoints=web"
       - "traefik.http.services.transmission-traefik.loadbalancer.server.port=8080"
       - com.centurylinklabs.watchtower.enable="true"
