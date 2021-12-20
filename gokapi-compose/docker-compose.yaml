@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  gokapi:
+    image: f0rc3/gokapi:latest
+    container_name: gokapi
+    restart: unless-stopped
+    volumes:
+      - /media/javi/disco/gokapi/config:/app/config
+      - /media/javi/disco/gokapi/data:/app/data
+    environment:
+      GOKAPI_USERNAME: ${USERNAME}
+      GOKAPI_PASSWORD: ${PASSWORD}
+      GOKAPI_PORT: ${PORT}
+      GOKAPI_EXTERNAL_URL: ${FQDN}
+      GOKAPI_LOCALHOST: "no"
+      GOKAPI_USE_SSL: "no"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gokapi.rule=Host(${HOST})"
+      - "traefik.http.routers.gokapi.entrypoints=web"
+      - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=${PORT}"
+      - com.centurylinklabs.watchtower.enable="true"
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
