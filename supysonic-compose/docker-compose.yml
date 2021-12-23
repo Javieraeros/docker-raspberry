@@ -18,7 +18,7 @@ services:
       - "traefik.http.routers.supysonic.rule=Host(${HOST})"
       - "traefik.http.routers.supysonic.entrypoints=web"
       - "traefik.http.services.supysonic-traefik.loadbalancer.server.port=8080"
-      - com.centurylinklabs.watchtower.enable="true"
+      - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   default:

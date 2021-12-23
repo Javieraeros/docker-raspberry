@@ -20,7 +20,7 @@ services:
       - "traefik.http.routers.gokapi.rule=Host(${HOST})"
       - "traefik.http.routers.gokapi.entrypoints=web"
       - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=${PORT}"
-      - com.centurylinklabs.watchtower.enable="true"
+      - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   default:
