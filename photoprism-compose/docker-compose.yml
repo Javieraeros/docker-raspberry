@@ -46,8 +46,8 @@ services:
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTOPRISM_PASSWORD}          # PLEASE CHANGE: Your initial admin password (min 4 characters)
       PHOTOPRISM_ORIGINALS_LIMIT: 1000               # File size limit for originals in MB (increase for high-res video)
       PHOTOPRISM_HTTP_COMPRESSION: "none"            # Improves transfer speed and bandwidth utilization (none or gzip)
-      PHOTOPRISM_WORKERS: 2                          # Limits the number of indexing workers to reduce system load
-      PHOTOPRISM_DEBUG: "false"                      # Run in debug mode (shows additional log messages)
+      PHOTOPRISM_WORKERS: 4                          # Limits the number of indexing workers to reduce system load
+      PHOTOPRISM_DEBUG: "true"                      # Run in debug mode (shows additional log messages)
       PHOTOPRISM_PUBLIC: "false"                     # No authentication required (disables password protection)
       PHOTOPRISM_READONLY: "false"                   # Don't modify originals directory (reduced functionality)
       PHOTOPRISM_EXPERIMENTAL: "false"               # Enables experimental features
@@ -65,7 +65,7 @@ services:
       PHOTOPRISM_DATABASE_NAME: ${DATABASE}         # MariaDB database schema name
       PHOTOPRISM_DATABASE_USER: ${USER}         # MariaDB database user name
       PHOTOPRISM_DATABASE_PASSWORD: ${USER_PASSWORD} # MariaDB database user password
-      PHOTOPRISM_SITE_URL: "http://localhost:2342/"  # Public PhotoPrism URL
+      PHOTOPRISM_SITE_URL: "http://192.168.0.200:2342/"  # Public PhotoPrism URL
       PHOTOPRISM_SITE_TITLE: "PhotoPrism"
       PHOTOPRISM_SITE_CAPTION: "Browse Your Life"
       PHOTOPRISM_SITE_DESCRIPTION: ""
@@ -91,6 +91,10 @@ services:
       # Permanent storage for settings, index & sidecar files (DON'T REMOVE):
       - "/media/javi/disco/photoprism/storage:/photoprism/storage"
     labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.photoprism.rule=Host(${HOST})"
+      - "traefik.http.routers.photoprism.entrypoints=web"
+      - "traefik.http.services.photoprism-traefik.loadbalancer.server.port=2342"
       - "com.centurylinklabs.watchtower.enable=true"
 
   mariadb:
@@ -121,3 +125,7 @@ services:
 #    volumes:
 #      - "/var/run/docker.sock:/var/run/docker.sock"
 #      - "~/.docker/config.json:/config.json" # Optional, for authentication if you have a Docker Hub account
+networks:
+  default:
+    external:
+      name: traefik-compose_default
