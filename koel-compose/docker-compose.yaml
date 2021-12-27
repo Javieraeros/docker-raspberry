@@ -23,7 +23,7 @@ services:
       - "traefik.http.routers.koel.rule=Host(${HOST})"
       - "traefik.http.routers.koel.entrypoints=web"
       - "traefik.http.services.koel-traefik.loadbalancer.server.port=80"
-      - com.centurylinklabs.watchtower.enable="true"
+      - "com.centurylinklabs.watchtower.enable=true"
   database:
     image: postgres
     volumes:
