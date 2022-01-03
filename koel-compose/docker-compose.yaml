@@ -11,7 +11,7 @@ services:
       - "8083:80"
     environment:
       - DB_CONNECTION=pgsql
-      - DB_HOST=database
+      - DB_HOST=db_koel
       - DB_USERNAME=${USERNAME}
       - DB_PASSWORD=${PASSWORD}
       - DB_DATABASE=${DATABASE}
@@ -25,7 +25,9 @@ services:
       - "traefik.http.services.koel-traefik.loadbalancer.server.port=80"
       - "com.centurylinklabs.watchtower.enable=true"
   database:
-    image: postgres
+    image: postgres:12
+    container_name: db_koel
+    hostname: db_koel
     volumes:
       - /media/javi/disco/musica/db:/var/lib/postgresql/data
     environment:

@@ -1,71 +1,45 @@
 version: '3'
+
 services:
   web:
     container_name: nextcloud
-    image: nextcloud
+    image: nextcloud:21.0.2
     restart: always
+    depends_on:
+      - db
     ports:
       - "4445:80"
     volumes:
       - /media/javi/disco/nextcloud:/var/www/html
     environment:
-      - POSTGRES_HOST=postgre_nextcloud
-      - POSTGRES_DB=${DB}
-      - POSTGRES_USER=${USER}
-      - POSTGRES_PASSWORD=${PASSWORD}
+      - MYSQL_HOST=mariadb
+      - MYSQL_PASSWORD=${PASSWORD}
+      - MYSQL_DATABASE=${DB}
+      - MYSQL_USER=${USER}
     labels:
-      - com.centurylinklabs.watchtower.enable="true"
-    networks:
-      nextcloud-bridge:
-        ipv4_address: 172.16.240.2
+      - "traefik.enable=true"
+      - "traefik.http.routers.nextcloud.rule=Host(${HOST})"
+      - "traefik.http.routers.nextcloud.entrypoints=web"
+      - "traefik.http.services.nextcloud-traefik.loadbalancer.server.port=80"
+      - "com.centurylinklabs.watchtower.enable=true"
   db:
-    container_name: postgre_nextcloud
-    image: postgres
+    container_name: db_nextcloud
+    image: arm64v8/mariadb
+    hostname: mariadb
     restart: always
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    command: mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=50 --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
     environment:
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_USER=${USER}
-      - POSTGRES_DB=${DB}
+      - MYSQL_ROOT_PASSWORD=${PASSWORD} 
+      - MYSQL_PASSWORD=${PASSWORD}
+      - MYSQL_DATABASE=${DB}
+      - MYSQL_USER=${USER}
     volumes:
-      - /media/javi/disco/nextcloud_postgre:/var/lib/postgresql/data
-    networks:
-      nextcloud-bridge:
-        ipv4_address: 172.16.240.4
-#  reverseProxy:
-#    container_name: nginx_nextcloud
-#    image: nginx
-#    restart: always
-#    ports:
-#      - "4445:4445"
-#    volumes:
-#      - certs:/etc/nginx/certs/
-#      - sites:/etc/nginx/conf.d/
-#    networks:
-#      nextcloud-bridge:
-#        ipv4_address: 172.16.240.3
-#volumes:
-#  nextcloud:
-#    driver: local
-#    driver_opts:
-#      type: 'none'
-#      o: 'bind'
-#      device: '/media/javi/disco/nextcloud'
-#  certs:
-#    driver: local
-#    driver_opts:
-#      type: 'none'
-#      o: 'bind'
-#      device: '/home/javi/docker/nextcloud-compose/nginx_volume/certs'
-#  sites:
-#    driver: local
-#    driver_opts:
-#      type: 'none'
-#      o: 'bind'
-#      device: '/home/javi/docker/nextcloud-compose/nginx_volume/conf.d'
+      - /media/javi/disco/nextcloud_db:/var/lib/mysql
+
 networks:
-  nextcloud-bridge:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.16.240.0/24
+  default:
+    external:
+      name: traefik-compose_default
