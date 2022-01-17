@@ -34,7 +34,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.monitoring.rule=Host(${HOST})"
-      - "traefik.http.routers.monitoring.entrypoints=web"
+      - "traefik.http.routers.monitoring.tls.certresolver=letsEncrypt"
       - "traefik.http.services.monitoring-traefik.loadbalancer.server.port=3000"
       - "com.centurylinklabs.watchtower.enable=true"
 

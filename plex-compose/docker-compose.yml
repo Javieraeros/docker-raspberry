@@ -8,5 +8,15 @@ services:
       - /media/javi/disco/plex/config:/root/Library
       - /media/javi/disco/plex/pelis:/media
     restart: unless-stopped
+    ports:
+      - "32400:32400"
     labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.plex.rule=Host(${HOST})"
+      - "traefik.http.routers.plex.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.plex-traefik.loadbalancer.server.port=32400"
       - "com.centurylinklabs.watchtower.enable=true"
+networks:
+  default:
+    external:
+      name: traefik-compose_default

@@ -1,6 +1,25 @@
 entryPoints:
   web:
-    address: :80
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          to: websecure
+          scheme: https
+
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  letsEncrypt:
+    acme:
+      email: fjruiz.1992@gmail.com
+      storage: acme.json
+      httpChallenge:
+        # used during the challenge
+        entryPoint: web
+log:
+  level: DEBUG
 api:
   insecure: true
 providers:

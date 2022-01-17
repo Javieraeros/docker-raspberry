@@ -25,7 +25,7 @@ services:
       - "traefik.http.services.koel-traefik.loadbalancer.server.port=80"
       - "com.centurylinklabs.watchtower.enable=true"
   database:
-    image: postgres:12
+    image: postgres
     container_name: db_koel
     hostname: db_koel
     volumes:
