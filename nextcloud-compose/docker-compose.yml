@@ -12,10 +12,10 @@ services:
     volumes:
       - /media/javi/disco/nextcloud:/var/www/html
     environment:
-      - MYSQL_HOST=mariadb
-      - MYSQL_PASSWORD=${PASSWORD}
-      - MYSQL_DATABASE=${DB}
-      - MYSQL_USER=${USER}
+      - POSTGRES_HOST=postgre_nextcloud
+      - POSTGRES_DB=${DB}
+      - POSTGRES_USER=${USER}
+      - POSTGRES_PASSWORD=${PASSWORD}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.nextcloud.rule=Host(${HOST})"
@@ -23,19 +23,13 @@ services:
       - "traefik.http.services.nextcloud-traefik.loadbalancer.server.port=80"
       - "com.centurylinklabs.watchtower.enable=true"
   db:
-    container_name: db_nextcloud
-    image: arm64v8/mariadb
-    hostname: mariadb
+    container_name: postgre_nextcloud
+    image: postgres
     restart: always
-    security_opt:
-      - seccomp:unconfined
-      - apparmor:unconfined
-    command: mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=50 --binlog-format=ROW --innodb-file-per-table=1 --skip-innodb-read-only-compressed
     environment:
-      - MYSQL_ROOT_PASSWORD=${PASSWORD} 
-      - MYSQL_PASSWORD=${PASSWORD}
-      - MYSQL_DATABASE=${DB}
-      - MYSQL_USER=${USER}
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_USER=${USER}
+      - POSTGRES_DB=${DB}
     volumes:
       - /media/javi/disco/nextcloud_db:/var/lib/mysql
 
