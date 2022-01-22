@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    ports:
+      - "4533:4533"
+    restart: unless-stopped
+    volumes:
+      - "/media/javi/disco/musica/carnavales:/music:ro"
+      - "/media/javi/disco/musica/navifrome:/data"
+    environment:
+      ND_BASEURL: ""
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.navidrome.rule=Host(${HOST})"
+      - "traefik.http.routers.navidrome.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.navidrome-traefik.loadbalancer.server.port=4533"
+      - "com.centurylinklabs.watchtower.enable=true"
+    healthcheck:
+      disable: true
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
