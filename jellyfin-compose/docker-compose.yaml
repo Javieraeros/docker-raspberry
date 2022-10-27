@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  jellyfin:
+    image: linuxserver/jellyfin:bionic
+    container_name: jellyfin
+    ports:
+      - "8096:8096"
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - "/media/javi/disco/musica/carnavales:/media"
+      - "/media/javi/disco/musica/jellyfin/config:/config"
+      - "/media/javi/disco/musica/jellyfin/cache:/cache"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(${HOST})"
+      - "traefik.http.routers.jellyfin.entrypoints=web"
+      - "traefik.http.services.jellyfin-traefik.loadbalancer.server.port=8096"
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
