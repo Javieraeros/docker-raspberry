@@ -3,10 +3,9 @@ services:
   plex:
     image: jaymoulin/plex
     container_name: plex
-    network_mode: host
     volumes:
       - /media/javi/disco/plex/config:/root/Library
-      - /media/javi/disco/plex/pelis:/media
+      - /media/javi/disco/pelis:/media
     restart: unless-stopped
     ports:
       - "32400:32400"
