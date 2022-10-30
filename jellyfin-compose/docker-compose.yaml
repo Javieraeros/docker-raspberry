@@ -11,7 +11,8 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - "/media/javi/disco/musica/carnavales:/media"
+      - "/media/javi/disco/musica/carnavales:/media/musica"
+      - "/media/javi/disco/pelis:/media/pelis"
       - "/media/javi/disco/musica/jellyfin/config:/config"
       - "/media/javi/disco/musica/jellyfin/cache:/cache"
     labels:
