@@ -1,0 +1,50 @@
+version: "2.1"
+services:
+  calibre:
+    image: lscr.io/linuxserver/calibre:arm64v8-arch
+    container_name: calibre
+    security_opt:
+      - seccomp:unconfined #optional
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+      - PASSWORD=${PASSWORD} #optional
+    volumes:
+      - /media/javi/disco/libros/config:/config
+      - /media/javi/disco/libros/books:/books
+    ports:
+      - 9080:8080
+      - 9081:8081
+    restart: unless-stopped
+
+
+  calibre-web:
+    image: linuxserver/calibre-web:arm64v8-0.6.19
+    container_name: calibre-web
+    depends_on:
+      - "calibre"
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /media/javi/disco/libros/config:/config
+      - /media/javi/disco/libros/books:/books
+    ports:
+      - 8086:8083
+    restart: unless-stopped
+    security_opt:
+      - seccomp:unconfined
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.calibre.rule=Host(${HOST})"
+      - "traefik.http.routers.calibre.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.calibre-traefik.loadbalancer.server.port=8083"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
+

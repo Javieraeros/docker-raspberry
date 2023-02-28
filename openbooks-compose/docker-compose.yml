@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  openbooks:
+    image: evanbuss/openbooks:latest
+    container_name: openbooks
+    ports:
+        - '8085:80'
+    volumes:
+        - '/media/javi/disco/libros:/books'
+    restart: unless-stopped
+    command: --persist
+    environment:
+      - BASE_PATH=/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.openbooks.rule=Host(${HOST})"
+      - "traefik.http.routers.openbooks.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.openbooks-traefik.loadbalancer.server.port=80"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default

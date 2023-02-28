@@ -18,12 +18,6 @@ def venti_off(message):
 def send_temp(message):
     bot.reply_to(message, get_temp())
 
-
-@bot.message_handler(commands=['guapa'])
-def claudia(message):
-    bot.reply_to(message, "Claudia")
-
-
 @bot.message_handler(commands=['ip'])
 def ip(message):
     bot.reply_to(message, get_ip())

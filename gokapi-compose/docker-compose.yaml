@@ -5,6 +5,8 @@ services:
     image: f0rc3/gokapi:latest
     container_name: gokapi
     restart: unless-stopped
+    ports:
+      - ${PORT}:8090
     volumes:
       - /media/javi/disco/gokapi/config:/app/config
       - /media/javi/disco/gokapi/data:/app/data
