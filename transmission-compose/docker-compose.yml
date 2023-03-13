@@ -5,8 +5,8 @@ services:
     build: .
     restart: always
     volumes:
-      - "/media/javi/disco/transmission/downloaded/:/downloaded"
-      - "/media/javi/disco/transmission/downloading/:/downloading"
+      - "/media/javi/toshiba/transmission/downloaded/:/downloaded"
+      - "/media/javi/toshiba/transmission/downloading/:/downloading"
     tty: true
     ports:
       - "4444:8080"

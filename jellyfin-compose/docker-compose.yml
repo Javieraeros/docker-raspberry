@@ -13,6 +13,7 @@ services:
     volumes:
       - "/media/javi/disco/musica/carnavales:/media/musica"
       - "/media/javi/disco/pelis:/media/pelis"
+      - "/media/javi/disco/series:/media/series"
       - "/media/javi/disco/musica/jellyfin/config:/config"
       - "/media/javi/disco/musica/jellyfin/cache:/cache"
     labels:

@@ -45,7 +45,7 @@ def get_temp():
 
 
 def get_disco():  
-    cmd = "df -h | grep 'Filesystem\|overlay\|/dev/sda1\|/dev/sdc1'"
+    cmd = "df -h | grep 'Filesystem\|overlay\|/dev/sda1\|/dev/sdb1'"
     process = subprocess.Popen([cmd],
         shell=True,
         stdout=subprocess.PIPE,

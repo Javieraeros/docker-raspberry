@@ -17,6 +17,7 @@ services:
       - /proc:/dockerhost/proc:ro
       - /usr/lib:/dockerhost/usr/lib:ro
       - /media/javi/disco:/dev/sda1:ro
+      - /media/javi/toshiba:/dev/sdb1:ro
       - /home/javi/.ssh:/home/app/.ssh:ro
     environment:
       - BOT_ID=${BOT_ID}
