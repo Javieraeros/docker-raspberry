@@ -1,8 +1,8 @@
-version: "3"
+version: "2.1"
 
 services:
   jellyfin:
-    image: linuxserver/jellyfin:bionic
+    image: linuxserver/jellyfin:latest
     container_name: jellyfin
     ports:
       - "8096:8096"
@@ -16,6 +16,12 @@ services:
       - "/media/javi/disco/series:/media/series"
       - "/media/javi/disco/musica/jellyfin/config:/config"
       - "/media/javi/disco/musica/jellyfin/cache:/cache"
+    devices:
+      - "/dev/video10:/dev/video10"
+      - "/dev/video11:/dev/video11"
+      - "/dev/video12:/dev/video12"
+    security_opt:
+      - seccomp:unconfined
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.jellyfin.rule=Host(${HOST})"
