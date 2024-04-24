@@ -6,9 +6,6 @@ services:
     container_name: raspibot
     network_mode: host
     restart: unless-stopped
-    devices:
-      - /dev/vchiq
-      - /dev/vcsm-cma
     volumes:
       - ./RaspiBot:/home/app/
       - /boot:/boot:ro

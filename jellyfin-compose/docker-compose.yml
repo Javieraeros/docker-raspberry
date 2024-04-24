@@ -17,9 +17,10 @@ services:
       - "/media/javi/disco/musica/jellyfin/config:/config"
       - "/media/javi/disco/musica/jellyfin/cache:/cache"
     devices:
-      - "/dev/video10:/dev/video10"
-      - "/dev/video11:/dev/video11"
-      - "/dev/video12:/dev/video12"
+      - "/dev/dri/:/dev/dri/"
+      - "/dev/video20:/dev/video10"
+      - "/dev/video21:/dev/video11"
+      - "/dev/video22:/dev/video12"
     security_opt:
       - seccomp:unconfined
     labels:

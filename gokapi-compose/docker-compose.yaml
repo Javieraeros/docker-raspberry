@@ -16,12 +16,12 @@ services:
       GOKAPI_PORT: ${PORT}
       GOKAPI_EXTERNAL_URL: ${FQDN}
       GOKAPI_LOCALHOST: "no"
-      GOKAPI_USE_SSL: "no"
+      GOKAPI_USE_SSL: "yes"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gokapi.rule=Host(${HOST})"
       - "traefik.http.routers.gokapi.tls.certresolver=letsEcrypt"
-      - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=${PORT}"
+      - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=8090"
       - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
