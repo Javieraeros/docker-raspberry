@@ -27,6 +27,9 @@ def ip(message):
 def disco(message):
     bot.reply_to(message, get_disco())
 
+@bot.message_handler(commands=['grabacion'])
+def disco(message):
+    bot.reply_to(message, get_rec())
 
 def get_ip():
     process = subprocess.Popen(['/usr/bin/curl', 'ifconfig.me'],
@@ -46,6 +49,15 @@ def get_temp():
 
 def get_disco():  
     cmd = "df -h | grep 'Filesystem\|overlay\|/dev/sda1\|/dev/sdb1'"
+    process = subprocess.Popen([cmd],
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    return stdout
+
+def get_rec():  
+    cmd = "ls -R /dev/sdb1/recourdbate | grep part"
     process = subprocess.Popen([cmd],
         shell=True,
         stdout=subprocess.PIPE,

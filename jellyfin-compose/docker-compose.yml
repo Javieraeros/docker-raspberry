@@ -2,7 +2,7 @@ version: "2.1"
 
 services:
   jellyfin:
-    image: linuxserver/jellyfin:latest
+    image: linuxserver/jellyfin:arm64v8-10.9.8
     container_name: jellyfin
     ports:
       - "8096:8096"
@@ -22,13 +22,13 @@ services:
       - "/dev/video12:/dev/video12"
     security_opt:
       - seccomp:unconfined
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(${HOST})"
-      - "traefik.http.routers.jellyfin.entrypoints=web"
-      - "traefik.http.services.jellyfin-traefik.loadbalancer.server.port=8096"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.jellyfin.rule=Host(${HOST})"
+#      - "traefik.http.routers.jellyfin.entrypoints=web"
+#      - "traefik.http.services.jellyfin-traefik.loadbalancer.server.port=8096"
 
-networks:
-  default:
-    external:
-      name: traefik-compose_default
+#networks:
+#  default:
+#    external:
+#      name: traefik-compose_default
