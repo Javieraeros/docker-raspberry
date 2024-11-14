@@ -1,0 +1,41 @@
+http:
+  routers:
+    jellyfin:
+      entryPoints:
+        - "web"
+      rule: "Host(`jellyfin.fjruiz.duckdns.org`)"
+      service: jellyfin_video
+
+    wireguard:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`wireguard.fjruiz.duckdns.org`)"
+      tls:
+        certResolver: letsEncrypt
+      service: wireguard
+
+    pihole:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`pihole.fjruiz.duckdns.org`)"
+      tls:
+        certResolver: letsEncrypt
+      service: pihole
+
+
+  services:
+    jellyfin_video:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.201:8096"
+        passHostHeader: true
+    wireguard:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.201:51821"
+        passHostHeader: true
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.0.201:5353"
+        passHostHeader: true

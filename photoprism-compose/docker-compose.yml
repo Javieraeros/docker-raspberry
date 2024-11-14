@@ -91,7 +91,7 @@ services:
       # Permanent storage for settings, index & sidecar files (DON'T REMOVE):
       - "/media/javi/disco/photoprism/storage:/photoprism/storage"
     labels:
-      - "traefik.enable=true"
+      - "traefik.enable=false"
       - "traefik.http.routers.photoprism.rule=Host(${HOST})"
       - "traefik.http.routers.photoprism.tls.certresolver=letsEncrypt"
       - "traefik.http.services.photoprism-traefik.loadbalancer.server.port=2342"

@@ -9,7 +9,7 @@ services:
     volumes:
         - '/media/javi/disco/libros:/books'
     restart: unless-stopped
-    command: --name Javieraeros --persist --tls=false
+    command: --name Javieraeros --persist 
     environment:
       - BASE_PATH=/
     labels:

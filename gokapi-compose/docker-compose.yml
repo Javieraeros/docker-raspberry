@@ -17,6 +17,8 @@ services:
       GOKAPI_EXTERNAL_URL: ${FQDN}
       GOKAPI_LOCALHOST: "no"
       GOKAPI_USE_SSL: "yes"
+    healthcheck:
+      disable: true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gokapi.rule=Host(${HOST})"

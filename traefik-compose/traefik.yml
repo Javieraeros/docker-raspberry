@@ -21,3 +21,5 @@ providers:
   docker:
     exposedByDefault: false
     endpoint: "unix:///var/run/docker.sock"
+  file:
+    filename: /config.yml
