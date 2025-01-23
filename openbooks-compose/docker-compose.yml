@@ -7,7 +7,7 @@ services:
     ports:
         - '8085:80'
     volumes:
-        - '/media/javi/disco/libros:/books'
+        - '/media/javi/disco/libros/audiobooks:/books'
     restart: unless-stopped
     command: --name Javieraeros --persist 
     environment:
