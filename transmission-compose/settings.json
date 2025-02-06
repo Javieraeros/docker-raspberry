@@ -47,7 +47,7 @@
     "rpc-bind-address": "0.0.0.0",
     "rpc-enabled": true,
     "rpc-host-whitelist": "",
-    "rpc-host-whitelist-enabled": true,
+    "rpc-host-whitelist-enabled": false,
     "rpc-password": "{583cc1784668d05651a2716dbca600e30edb6103BRwl70ux",
     "rpc-port": 8080,
     "rpc-url": "/transmission/",

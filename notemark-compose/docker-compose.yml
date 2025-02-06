@@ -1,0 +1,26 @@
+services:
+  notemark:
+    image: ghcr.io/enchant97/note-mark-aio
+    container_name: notemark
+    restart: unless-stopped
+    volumes:
+      - '/media/javi/disco/notes:/data'
+    ports:
+      - '8000:8000'
+    environment:
+      JWT_SECRET: "${JWT}"
+      CORS_ORIGINS: "https://${HOST}"
+      ALLOW_SIGNUP: "false"
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.notemark.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.notemark.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.notemark-traefik.loadbalancer.server.port=8000"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
