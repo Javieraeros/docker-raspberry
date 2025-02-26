@@ -8,7 +8,7 @@ entryPoints:
 certificatesResolvers:
   letsEncrypt:
     acme:
-      email: fjruiz.1992@gmail.com
+      email: xxxxx@yyyy.com
       storage: acme.json
       httpChallenge:
         # used during the challenge

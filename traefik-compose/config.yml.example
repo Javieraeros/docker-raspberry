@@ -1,0 +1,28 @@
+http:
+  routers:
+    example:
+      entryPoints:
+        - "web"
+      rule: "Host(`example.org`)"
+      service: example
+
+    secureexample:
+      entryPoints:
+        - "websecure"
+      rule: "Host(`secureexample.org`)"
+      tls:
+        certResolver: letsEncrypt
+      service: secureexample
+
+
+  services:
+    example:
+      loadBalancer:
+        servers:
+          - url: "http://XXX.XXX.XXX.XXX:YYYY"
+        passHostHeader: true
+    secureexample:
+      loadBalancer:
+        servers:
+          - url: "http://XXX.XXX.XXX.XXX:ZZZZ"
+        passHostHeader: true
