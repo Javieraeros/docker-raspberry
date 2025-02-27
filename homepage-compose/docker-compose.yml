@@ -5,6 +5,9 @@ services:
     volumes:
       - ${CONFIG_PATH}:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
+      - ${DISK_1}:/disk1:ro
+      - ${DISK_2}:/disk2:ro
+      - ${DISK_3}:/disk3:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.homepage.rule=Host(`${HOST}`)"
