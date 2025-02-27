@@ -1,0 +1,19 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    volumes:
+      - ${CONFIG_PATH}:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.homepage.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.homepage-traefik.loadbalancer.server.port=3000"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
