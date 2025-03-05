@@ -16,6 +16,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.openbooks.rule=Host(${HOST})"
       - "traefik.http.routers.openbooks.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.openbooks.middlewares=default-auth@file"
       - "traefik.http.services.openbooks-traefik.loadbalancer.server.port=80"
       - "com.centurylinklabs.watchtower.enable=true"
 
