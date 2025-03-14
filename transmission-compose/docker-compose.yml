@@ -1,20 +1,22 @@
 version : '3'
 services:
-  web:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
-    build: .
-    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
     volumes:
-      - "/media/javi/toshiba/transmission/downloaded/:/downloaded"
-      - "/media/javi/toshiba/transmission/downloading/:/downloading"
-    tty: true
-    ports:
-      - "4444:8080"
+      - ${CONFIG_PATH}:/config
+      - ${DOWNLOADS_PATH}:/downloads #optional
+    restart: unless-stopped
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.transmission.rule=Host(${HOST})"
       - "traefik.http.routers.transmission.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.transmission-traefik.loadbalancer.server.port=8080"
+      - "traefik.http.routers.transmission.middlewares=default-auth@file"
+      - "traefik.http.services.transmission-traefik.loadbalancer.server.port=9091"
       - "com.centurylinklabs.watchtower.enable=true"
 networks:
   default:
