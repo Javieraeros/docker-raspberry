@@ -1,0 +1,30 @@
+services:
+  mealie:
+    image: ghcr.io/mealie-recipes/mealie:v2.7.1 
+    container_name: mealie
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1000M
+    volumes:
+      - ${CONFIG_PATH}:/app/data/
+    environment:
+      # Set Backend ENV Variables Here
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Madrid
+      BASE_URL: https://${HOST}
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mealie.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.mealie.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.mealie-traefik.loadbalancer.server.port=9000"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
