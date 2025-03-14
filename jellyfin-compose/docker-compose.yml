@@ -2,7 +2,7 @@ version: "2.1"
 
 services:
   jellyfin:
-    image: linuxserver/jellyfin:arm64v8-10.9.8
+    image: jellyfin/jellyfin:latest
     container_name: jellyfin
     ports:
       - "8096:8096"
