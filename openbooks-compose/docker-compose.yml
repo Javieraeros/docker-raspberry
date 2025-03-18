@@ -4,8 +4,6 @@ services:
   openbooks:
     image: evanbuss/openbooks:latest
     container_name: openbooks
-    ports:
-        - '8085:80'
     volumes:
         - '/media/javi/disco/libros/audiobooks:/books'
     restart: unless-stopped

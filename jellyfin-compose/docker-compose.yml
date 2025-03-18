@@ -11,11 +11,11 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - "/media/javi/disco/musica/carnavales:/media/musica"
-      - "/media/javi/disco/pelis:/media/pelis"
-      - "/media/javi/disco/series:/media/series"
-      - "/media/javi/disco/musica/jellyfin/config:/config"
-      - "/media/javi/disco/musica/jellyfin/cache:/cache"
+      - "$MUSIC:/media/musica"
+      - "$FILMS:/media/pelis"
+      - "$SHOWS:/media/series"
+      - "$CONFIG:/config"
+      - "$CACHE:/cache"
     devices:
       - "/dev/dri/:/dev/dri/"
       - "/dev/video20:/dev/video10"
@@ -31,25 +31,82 @@ services:
       - "traefik.http.routers.jellyfin-secure.entrypoints=websecure"
       - "traefik.http.routers.jellyfin-secure.tls.certresolver=letsEncrypt"
       - "traefik.http.services.jellyfin-traefik.loadbalancer.server.port=8096"
-#  sonarr:
-#    image: lscr.io/linuxserver/sonarr:latest
-#    container_name: sonarr
-#    environment:
-#      - PUID=1000
-#      - PGID=1000
-#    volumes:
-#      - /media/javi/disco/sonarr:/config
-#      - /media/javi/disco/series:/tv #optional
-#      - /media/javi/toshiba/transmission/downloaded:/downloads #optional
-#    ports:
-#      - 8989:8989
-#    restart: unless-stopped
-#    labels:
-#      - "traefik.enable=true"
-#      - "traefik.http.routers.sonarr.rule=Host(${HOST_SONARR})"
-#      - "traefik.http.routers.sonarr.tls.certresolver=letsencrypt"
-#      - "traefik.http.services.sonarr-traefik.loadbalancer.server.port=8989"
 
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - $JELLYSEERR:/app/config
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyseerr.rule=Host(${HOST_JELLYSEERR})"
+      - "traefik.http.routers.jellyseerr.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.jellyseerr-traefik.loadbalancer.server.port=5055"
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - $SONARR:/config
+      - $SHOWS:/tv #optional
+      - $DOWNLOADS:/downloads #optional
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sonarr.rule=Host(${HOST_SONARR})"
+      - "traefik.http.routers.sonarr.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.sonarr-traefik.loadbalancer.server.port=8989"
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ${RADARR}:/config
+      - ${FILMS}:/movies #optional
+      - $DOWNLOADS:/downloads #optional
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.radarr.rule=Host(${HOST_RADARR})"
+      - "traefik.http.routers.radarr.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.radarr-traefik.loadbalancer.server.port=7878"
+  
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ${JACKETT}:/config
+      - ${DOWNLOADS}:/downloads
+    ports:
+      - 9117:9117
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jackett-temp.entrypoints=web"
+      - "traefik.http.routers.jackett-temp.rule=Host(${HOST_JACKETT})"
+      - "traefik.http.routers.jackett.rule=Host(${HOST_JACKETT})"
+      - "traefik.http.routers.jackett.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.jackett-traefik.loadbalancer.server.port=9117"
 networks:
   default:
     external:
