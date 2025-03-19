@@ -8,6 +8,7 @@ services:
     volumes:
       - ${STORAGE}:/storage
       - ${ASSETS}:/assets
+      - ${LOGS}:/logs
     environment:
       SERVER_LANG: es
       TMDB_LANG: es
