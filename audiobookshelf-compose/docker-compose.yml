@@ -5,16 +5,39 @@ services:
     image: ghcr.io/advplyr/audiobookshelf:latest
     container_name: audiobookshelf
     volumes:
-      - '/media/javi/disco/libros/audiobooks:/audiobooks'
-      - '/media/javi/disco/libros/podcasts:/podcasts'
-      - '/media/javi/disco/libros/metadata:/metadata'
-      - '/media/javi/disco/libros/config:/config'
+      - '${BOOKS}:/audiobooks'
+      - '${PODCASTS}:/podcasts'
+      - '${METADATA}:/metadata'
+      - '${CONFIG}:/config'
     restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.audiobookshelf.rule=Host(${HOST})"
       - "traefik.http.routers.audiobookshelf.tls.certresolver=letsEncrypt"
       - "traefik.http.services.audiobookshelf-traefik.loadbalancer.server.port=80"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  readarr:
+    image: lscr.io/linuxserver/readarr:develop
+    container_name: readarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - ${READARR_CONFIG}:/config
+      - ${BOOKS}:/books 
+      - ${DOWNLOADS}:/downloads
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.readarr.rule=Host(${HOST_READARR})"
+      - "traefik.http.routers.readarr.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.readarr-traefik.loadbalancer.server.port=8787"
       - "com.centurylinklabs.watchtower.enable=true"
 
 networks:

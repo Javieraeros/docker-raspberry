@@ -86,7 +86,28 @@ services:
       - "traefik.http.routers.radarr.rule=Host(${HOST_RADARR})"
       - "traefik.http.routers.radarr.tls.certresolver=letsEncrypt"
       - "traefik.http.services.radarr-traefik.loadbalancer.server.port=7878"
-  
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - $BAZARR:/config
+      - $FILMS:/movies
+      - $SHOWS:/tv
+    ports:
+      - 6767:6767
+    restart: unless-stopped  
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.bazarr.rule=Host(${HOST_BAZARR})"
+      - "traefik.http.routers.bazarr.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.bazarr.middlewares=default-auth@file"
+      - "traefik.http.services.bazarr-traefik.loadbalancer.server.port=6767"
+
   jackett:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
