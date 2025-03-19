@@ -1,46 +1,54 @@
 version: "2.1"
 services:
   calibre:
-    image: lscr.io/linuxserver/calibre:arm64v8-arch
+    image: lscr.io/linuxserver/calibre:latest
     container_name: calibre
-    security_opt:
-      - seccomp:unconfined #optional
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ=Europe/Madrid
       - PASSWORD=${PASSWORD} #optional
     volumes:
-      - /media/javi/disco/libros/config:/config
-      - /media/javi/disco/libros/books:/books
-    ports:
-      - 9080:8080
-      - 9081:8081
+      - $CALIBRE_CONFIG:/config
     restart: unless-stopped
 
-
   calibre-web:
-    image: linuxserver/calibre-web:arm64v8-0.6.19
+    image: lscr.io/linuxserver/calibre-web:latest
     container_name: calibre-web
     depends_on:
       - "calibre"
     environment:
+      - TZ=Europe/Madrid
       - PUID=1000
       - PGID=1000
     volumes:
-      - /media/javi/disco/libros/config:/config
-      - /media/javi/disco/libros/books:/books
-    ports:
-      - 8086:8083
+      - $CALIBRE_CONFIG:/config
+      - $BOOKS:/books
     restart: unless-stopped
-    security_opt:
-      - seccomp:unconfined
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.calibre.rule=Host(${HOST})"
       - "traefik.http.routers.calibre.tls.certresolver=letsEncrypt"
       - "traefik.http.services.calibre-traefik.loadbalancer.server.port=8083"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  lazylibrarian:
+    image: lscr.io/linuxserver/lazylibrarian:latest
+    container_name: lazylibrarian
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/lazylibrarian/data:/config
+      - $DOWNLOADS:/downloads
+      - $BOOKS:/books
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.lazylibrarian.rule=Host(${HOST_LAZY})"
+      - "traefik.http.routers.lazylibrarian.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.lazylibrarian-traefik.loadbalancer.server.port=5299"
       - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
