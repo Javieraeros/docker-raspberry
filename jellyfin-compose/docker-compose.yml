@@ -123,8 +123,6 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jackett-temp.entrypoints=web"
-      - "traefik.http.routers.jackett-temp.rule=Host(${HOST_JACKETT})"
       - "traefik.http.routers.jackett.rule=Host(${HOST_JACKETT})"
       - "traefik.http.routers.jackett.tls.certresolver=letsEncrypt"
       - "traefik.http.services.jackett-traefik.loadbalancer.server.port=9117"

@@ -86,7 +86,7 @@ services:
     #  - "/dev/video11:/dev/video11"
     volumes:
       # Your photo and video files ([local path]:[container path]):
-      - "/media/javi/disco/photoprism/photos:/photoprism/originals"
+      - "/media/javi/disco/photos:/photoprism/originals"
       # Multiple folders can be indexed by mounting them as sub-folders of /photoprism/originals:
       # - "/mnt/Family:/photoprism/originals/Family"    # [folder_1]:/photoprism/originals/[folder_1]
       # - "/mnt/Friends:/photoprism/originals/Friends"  # [folder_2]:/photoprism/originals/[folder_2]
