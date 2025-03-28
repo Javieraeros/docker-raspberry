@@ -37,6 +37,8 @@ services:
     environment:
       # ⚠️ Change the Web UI Password:
       - WEBPASSWORD=${PIHOLE_PASSWORD}
+      - TZ=Europe/Madrid
+      - "FTLCONF_dns_listeningMode=all"
     volumes:
       - "${PIHOLE_DIR}/etc-pihole:/etc/pihole"
       - "${PIHOLE_DIR}/etc-dnsmasq.d:/etc/dnsmasq.d"
@@ -44,6 +46,9 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
       - "5353:80/tcp"
+    dns: 
+      - 127.0.0.1
+      - 8.8.8.8
     restart: unless-stopped
     networks:
       wg-easy:

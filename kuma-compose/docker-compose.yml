@@ -1,0 +1,28 @@
+services:
+  kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: kuma
+    restart: unless-stopped
+    ports:
+      - 3001:3001
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - ${CONFIG_PATH}:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.kuma.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.kuma.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.kuma-traefik.loadbalancer.server.port=3001"
+      - "com.centurylinklabs.watchtower.enable=true"
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
