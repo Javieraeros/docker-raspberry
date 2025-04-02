@@ -5,7 +5,7 @@ services:
     image: evanbuss/openbooks:latest
     container_name: openbooks
     volumes:
-        - '/media/javi/disco/libros/audiobooks:/books'
+        - $DATA:/books
     restart: unless-stopped
     command: --name Javieraeros --persist 
     environment:
@@ -13,9 +13,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.openbooks.rule=Host(${HOST})"
+      - "traefik.http.routers.openbooks.entrypoints=websecure"
       - "traefik.http.routers.openbooks.tls.certresolver=letsEncrypt"
       - "traefik.http.routers.openbooks.middlewares=default-auth@file"
-      - "traefik.http.services.openbooks-traefik.loadbalancer.server.port=80"
+      - "traefik.http.services.openbooks-traefik.loadbalancer.server.port=${PORT}"
       - "com.centurylinklabs.watchtower.enable=true"
 
 networks:

@@ -11,12 +11,15 @@ services:
       - 8080:8080
     environment:
       - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
     volumes:
       - "$CONFIG_PATH:/etc/traefik"
       - /var/run/docker.sock:/var/run/docker.sock
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.tls.certresolver=letsEncrypt"
       - "traefik.http.routers.traefik.middlewares=default-auth@file"
       - "traefik.http.services.traefik-traefik.loadbalancer.server.port=8080"

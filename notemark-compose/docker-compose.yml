@@ -4,9 +4,7 @@ services:
     container_name: notemark
     restart: unless-stopped
     volumes:
-      - '/media/javi/disco/notes:/data'
-    ports:
-      - '8000:8000'
+      - ${DATA}:/data
     environment:
       JWT_SECRET: "${JWT}"
       CORS_ORIGINS: "https://${HOST}"
@@ -15,8 +13,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.notemark.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.notemark.entrypoints=websecure"
       - "traefik.http.routers.notemark.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.notemark-traefik.loadbalancer.server.port=8000"
+      - "traefik.http.services.notemark-traefik.loadbalancer.server.port=${PORT}"
       - "com.centurylinklabs.watchtower.enable=true"
 
 

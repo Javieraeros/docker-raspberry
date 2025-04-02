@@ -4,10 +4,10 @@ services:
     image: 'corentinth/it-tools:latest'  # The Docker image to use.
     container_name: it-tools
     restart: unless-stopped
-
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ittools.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.ittools.entrypoints=websecure"
       - "traefik.http.routers.ittools.tls.certresolver=letsEncrypt"
       - "traefik.http.routers.ittools.middlewares=default-auth@file"
       - "traefik.http.services.ittools-traefik.loadbalancer.server.port=80"

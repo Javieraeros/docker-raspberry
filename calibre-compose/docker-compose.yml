@@ -29,6 +29,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.calibre.rule=Host(${HOST})"
       - "traefik.http.routers.calibre.tls.certresolver=letsEncrypt"
+      - "traefik.http.routers.calibre.entrypoints=websecure"
       - "traefik.http.services.calibre-traefik.loadbalancer.server.port=8083"
       - "com.centurylinklabs.watchtower.enable=true"
 
@@ -47,6 +48,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.lazylibrarian.rule=Host(${HOST_LAZY})"
+      - "traefik.http.routers.lazylibrarian.entrypoints=websecure"
       - "traefik.http.routers.lazylibrarian.tls.certresolver=letsEncrypt"
       - "traefik.http.services.lazylibrarian-traefik.loadbalancer.server.port=5299"
       - "com.centurylinklabs.watchtower.enable=true"

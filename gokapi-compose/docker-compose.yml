@@ -6,8 +6,8 @@ services:
     container_name: gokapi
     restart: unless-stopped
     volumes:
-      - /media/javi/disco/gokapi/config:/app/config
-      - /media/javi/disco/gokapi/data:/app/data
+      - ${CONFIG}:/app/config
+      - ${DATA}:/app/data
     environment:
       GOKAPI_USERNAME: ${USERNAME}
       GOKAPI_PASSWORD: ${PASSWORD}
@@ -15,11 +15,14 @@ services:
       GOKAPI_EXTERNAL_URL: ${FQDN}
       GOKAPI_LOCALHOST: "no"
       GOKAPI_USE_SSL: "yes"
+      PUID: 1000
+      PGID: 1000
     healthcheck:
       disable: true
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.gokapi.rule=Host(${HOST})"
+      - "traefik.http.routers.gokapi.entrypoints=websecure"
       - "traefik.http.routers.gokapi.tls.certresolver=letsEncrypt"
       - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=${PORT}"
       - "com.centurylinklabs.watchtower.enable=true"
