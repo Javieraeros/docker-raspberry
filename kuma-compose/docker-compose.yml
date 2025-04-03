@@ -12,9 +12,6 @@ services:
     volumes:
       - ${CONFIG_PATH}:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.kuma.rule=Host(`${HOST}`)"
