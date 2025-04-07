@@ -5,6 +5,8 @@ services:
     image: f0rc3/gokapi:latest
     container_name: gokapi
     restart: unless-stopped
+    ports:
+      - $PORT:$PORT
     volumes:
       - ${CONFIG}:/app/config
       - ${DATA}:/app/data

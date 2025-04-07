@@ -3,6 +3,8 @@ services:
     image: ghcr.io/enchant97/note-mark-aio
     container_name: notemark
     restart: unless-stopped
+    ports:
+      - $PORT:$PORT
     volumes:
       - ${DATA}:/data
     environment:
