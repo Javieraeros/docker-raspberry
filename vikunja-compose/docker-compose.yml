@@ -6,7 +6,7 @@ services:
       VIKUNJA_SERVICE_JWTSECRET: ${SECRET}
       VIKUNJA_SERVICE_PUBLICURL: https://${HOST}/
       VIKUNJA_DATABASE_HOST: db
-      VIKUNJA_SERVICE_ENABLEREGISTRATION: 0
+#      VIKUNJA_SERVICE_ENABLEREGISTRATION: 0
       VIKUNJA_DATABASE_PASSWORD: ${PASSWORD}
       VIKUNJA_DATABASE_USER: ${USER}
       VIKUNJA_DATABASE_TYPE: postgres
@@ -24,17 +24,19 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.vikunja.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.vikunja.entrypoints=websecure"
       - "traefik.http.routers.vikunja.tls.certresolver=letsEncrypt"
       - "traefik.http.services.vikunja-traefik.loadbalancer.server.port=3456"
       - "com.centurylinklabs.watchtower.enable=true"
   db:
     image: postgres
     container_name: vikunja_db
-    user: 1000:1000
     environment:
-        POSTGRES_USER: ${USER}
-        POSTGRES_PASSWORD: ${PASSWORD}
-        POSTGRES_DB: vikunja
+      PUID: 1000
+      PGID: 1000 
+      POSTGRES_USER: ${USER}
+      POSTGRES_PASSWORD: ${PASSWORD}
+      POSTGRES_DB: vikunja
     volumes:
       - ${DB}:/var/lib/postgresql/data
     restart: unless-stopped
