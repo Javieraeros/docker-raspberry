@@ -16,15 +16,13 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
-    deploy:
-      mode: replicated
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.flatnotes.rule=Host(`${HOST}`)"
-        - "traefik.http.routers.flatnotes.entrypoints=websecure"
-        - "traefik.http.routers.flatnotes.tls.certresolver=letsEncrypt"
-        - "traefik.http.services.flatnotes-traefik.loadbalancer.server.port=8080"
-        - "com.centurylinklabs.watchtower.enable=true"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flatnotes.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.flatnotes.entrypoints=websecure"
+      - "traefik.http.routers.flatnotes.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.flatnotes-traefik.loadbalancer.server.port=8080"
+      - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   default:
