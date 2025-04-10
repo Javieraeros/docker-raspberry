@@ -1,25 +1,26 @@
-version: "2.1"
 services:
   plex:
     image: lscr.io/linuxserver/plex
     container_name: plex
     volumes:
-      - /media/javi/disco/plex/config:/config
-      - /media/javi/disco/pelis:/movies
-      - /media/javi/disco/series:/tv
+      - $CONFIG:/config
+      - $MOVIES:/data/movies
+      - $SHOWS:/data/tv
     restart: unless-stopped
     ports:
       - "32400:32400"
     environment:
       - PUID=1000
       - PGID=1000
+      - VERSION=docker
+      - TZ=Europe/Madrid
+      - PLEX_CLAIM=$TOKEN
     devices:
-      - "/dev/dri/card0:/dev/dri/card0"
-      - "/dev/dri/card1:/dev/dri/card1"
-      - "/dev/dri/renderD128:/dev/dri/renderD128"
+      - "/dev/dri:/dev/dri"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.plex.rule=Host(${HOST})"
+      - "traefik.http.routers.plex.entrypoints=websecure"
       - "traefik.http.routers.plex.tls.certresolver=letsEncrypt"
       - "traefik.http.services.plex-traefik.loadbalancer.server.port=32400"
       - "com.centurylinklabs.watchtower.enable=true"
