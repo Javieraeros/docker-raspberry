@@ -11,6 +11,8 @@ services:
       JWT_SECRET: "${JWT}"
       CORS_ORIGINS: "https://${HOST}"
       ALLOW_SIGNUP: "false"
+      PUID: 1000
+      PGID: 1000
 
     labels:
       - "traefik.enable=true"
