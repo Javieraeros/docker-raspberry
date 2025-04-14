@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  romm:
+    image: rommapp/romm:latest
+    container_name: romm
+    hostname: romm
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+
+      - DB_HOST=romm-db
+      - DB_NAME=$DB 
+      - DB_USER=$USER 
+      - DB_PASSWD=$PASSWORD 
+      - ROMM_AUTH_SECRET_KEY=$AUTH 
+      - IGDB_CLIENT_ID=$CLIENT_ID # Generate an ID and SECRET in IGDB
+      - IGDB_CLIENT_SECRET=$SECRET_ID # https://api-docs.igdb.com/#account-creation
+      - MOBYGAMES_API_KEY= # https://www.mobygames.com/info/api/
+      - STEAMGRIDDB_API_KEY= # https://github.com/rommapp/romm/wiki/Generate-API-Keys#steamgriddb
+    volumes:
+      - $RESOURCES:/romm/resources 
+      - $REDIS:/redis-data 
+      - $GAMES:/romm/library/roms 
+      - $ASSETS:/romm/assets 
+      - $CONFIG:/romm/config 
+    depends_on:
+      - romm-db
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.romm.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.romm.entrypoints=websecure"
+      - "traefik.http.routers.romm.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.romm.loadbalancer.server.port=8080"
+
+  romm-db:
+    image: linuxserver/mariadb:latest
+    container_name: romm-db
+    restart: unless-stopped
+    user: 1000:1000
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MYSQL_ROOT_PASSWORD=$ADMIN_PASSWORD
+      - MYSQL_DATABASE=$DB
+      - MYSQL_USER=$USER
+      - MYSQL_PASSWORD=$PASSWORD
+    volumes:
+      - $DB_DATA:/config
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default
