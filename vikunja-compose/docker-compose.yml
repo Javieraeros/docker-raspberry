@@ -10,7 +10,7 @@ services:
       VIKUNJA_DATABASE_PASSWORD: ${PASSWORD}
       VIKUNJA_DATABASE_USER: ${USER}
       VIKUNJA_DATABASE_TYPE: postgres
-      VIKUNA_DATABASE_DATABASE: vikunja
+      VIKUNJA_DATABASE_DATABASE: vikunja
       PUID: 1000
       PGID: 1000
     ports:

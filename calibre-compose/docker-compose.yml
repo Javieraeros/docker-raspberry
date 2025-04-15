@@ -41,7 +41,6 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - /path/to/lazylibrarian/data:/config
       - $DOWNLOADS:/downloads
       - $BOOKS:/books
     restart: unless-stopped

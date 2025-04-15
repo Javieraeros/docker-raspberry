@@ -7,7 +7,7 @@ services:
     volumes:
         - $DATA:/books
     restart: unless-stopped
-    command: --name Javieraeros --persist 
+    command: --name $USER --persist 
     environment:
       - BASE_PATH=/
     labels:
