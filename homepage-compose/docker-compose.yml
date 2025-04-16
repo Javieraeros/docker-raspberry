@@ -1,26 +1,30 @@
+version: '3.2'
+
 services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
-    container_name: homepage
+    hostname: homepage
     restart: unless-stopped
-    ports:
-      - 3000:3000
     volumes:
       - ${CONFIG_PATH}:/app/config
       - /var/run/docker.sock:/var/run/docker.sock
       - ${DISK_1}:/disk1:ro
       - ${DISK_2}:/disk2:ro
-      - ${DISK_3}:/disk3:ro
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.homepage.rule=Host(`${HOST}`)"
-      - "traefik.http.routers.homepage.entrypoints=websecure"
-      - "traefik.http.routers.homepage.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.homepage-traefik.loadbalancer.server.port=3000"
-      - "com.centurylinklabs.watchtower.enable=true"
-
+    environment:
+      HOMEPAGE_ALLOWED_HOSTS: $HOST
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == rpi5
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.homepage.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.homepage.entrypoints=websecure"
+        - "traefik.http.routers.homepage.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.homepage-traefik.loadbalancer.server.port=3000"
+        - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
