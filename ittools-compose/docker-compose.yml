@@ -2,21 +2,22 @@ version: '3.9'
 services:
   it-tools:
     image: 'corentinth/it-tools:latest'  # The Docker image to use.
-    container_name: it-tools
-    ports:
-      - 8091:80
-    restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ittools.rule=Host(`${HOST}`)"
-      - "traefik.http.routers.ittools.entrypoints=websecure"
-      - "traefik.http.routers.ittools.tls.certresolver=letsEncrypt"
-      - "traefik.http.routers.ittools.middlewares=default-auth@file"
-      - "traefik.http.services.ittools-traefik.loadbalancer.server.port=80"
-      - "com.centurylinklabs.watchtower.enable=true"
+    hostname: it-tools
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.ittools.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.ittools.entrypoints=websecure"
+        - "traefik.http.routers.ittools.tls.certresolver=letsEncrypt"
+        - "traefik.http.routers.ittools.middlewares=default-auth@file"
+        - "traefik.http.services.ittools-traefik.loadbalancer.server.port=80"
+        - "com.centurylinklabs.watchtower.enable=true"
 
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
