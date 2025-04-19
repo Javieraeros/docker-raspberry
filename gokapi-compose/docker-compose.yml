@@ -1,35 +1,36 @@
-version: '3'
+version: '3.2'
 
 services:
   gokapi:
     image: f0rc3/gokapi:latest
-    container_name: gokapi
-    restart: unless-stopped
-    ports:
-      - $PORT:$PORT
+    hostname: gokapi
     volumes:
       - ${CONFIG}:/app/config
       - ${DATA}:/app/data
     environment:
-      GOKAPI_USERNAME: ${USERNAME}
-      GOKAPI_PASSWORD: ${PASSWORD}
-      GOKAPI_PORT: ${PORT}
-      GOKAPI_EXTERNAL_URL: ${FQDN}
-      GOKAPI_LOCALHOST: "no"
-      GOKAPI_USE_SSL: "yes"
-      PUID: 1000
-      PGID: 1000
+      - GOKAPI_USERNAME=${USERNAME}
+      - GOKAPI_PASSWORD=${PASSWORD}
+      - GOKAPI_PORT=$PORT
+      - GOKAPI_EXTERNAL_URL=${FQDN}
+      - GOKAPI_LOCALHOST=no
+      - GOKAPI_USE_SSL=yes
+      - PUID=1000
+      - PGID=1000
     healthcheck:
       disable: true
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.gokapi.rule=Host(${HOST})"
-      - "traefik.http.routers.gokapi.entrypoints=websecure"
-      - "traefik.http.routers.gokapi.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=${PORT}"
-      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.gokapi.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.gokapi.entrypoints=websecure"
+        - "traefik.http.routers.gokapi.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.gokapi-traefik.loadbalancer.server.port=${PORT}"
+        - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
