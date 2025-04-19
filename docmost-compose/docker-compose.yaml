@@ -27,7 +27,7 @@ services:
         - "traefik.http.services.traefik-docmost.loadbalancer.server.port=$PORT"
       placement:
         constraints:
-          - node.hostname == rpi5
+          - node.hostname == $MACHINE
 
   db:
     image: postgres:16-alpine
@@ -45,7 +45,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == rpi5
+          - node.hostname == $MACHINE
 
   redis:
     image: redis:7.2-alpine
@@ -60,7 +60,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == rpi5
+          - node.hostname == $MACHINE
 
 networks:
   default:
