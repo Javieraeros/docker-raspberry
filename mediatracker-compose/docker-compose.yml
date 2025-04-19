@@ -1,10 +1,10 @@
+version: '3.2'
+
 services:
   mediatracker:
     image: bonukai/mediatracker:latest
-    container_name: mediatracker
+    hostname: mediatracker
     restart: unless-stopped
-    ports:
-      - 7481:7481
     volumes:
       - ${STORAGE}:/storage
       - ${ASSETS}:/assets
@@ -16,16 +16,20 @@ services:
       TZ: Europe/Madrid
       PUID: 1000
       GUID: 1000
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mediatracker.rule=Host(`${HOST}`)"
-      - "traefik.http.routers.mediatracker.entrypoints=websecure"
-      - "traefik.http.routers.mediatracker.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.mediatracker-traefik.loadbalancer.server.port=7481"
-      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.mediatracker.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.mediatracker.entrypoints=websecure"
+        - "traefik.http.routers.mediatracker.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.mediatracker-traefik.loadbalancer.server.port=7481"
+        - "com.centurylinklabs.watchtower.enable=true"
 
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
