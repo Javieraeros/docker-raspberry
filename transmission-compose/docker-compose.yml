@@ -1,10 +1,13 @@
-version : '3'
+version : '3.2'
+
 services:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
-    container_name: transmission
+    hostname: transmission
     ports:
-      - 51413:51413
+      - target: 51413
+        published: 51413
+        mode: host
     environment:
       - PUID=1000
       - PGID=1000
@@ -12,16 +15,20 @@ services:
     volumes:
       - ${CONFIG_PATH}:/config
       - ${DOWNLOADS_PATH}:/downloads #optional
-    restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.transmission.rule=Host(${HOST})"
-      - "traefik.http.routers.transmission.entrypoints=websecure"
-      - "traefik.http.routers.transmission.tls.certresolver=letsEncrypt"
-      - "traefik.http.routers.transmission.middlewares=default-auth@file"
-      - "traefik.http.services.transmission-traefik.loadbalancer.server.port=${PORT}"
-      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.transmission.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.transmission.entrypoints=websecure"
+        - "traefik.http.routers.transmission.tls.certresolver=letsEncrypt"
+        - "traefik.http.routers.transmission.middlewares=default-auth@file"
+        - "traefik.http.services.transmission.loadbalancer.server.port=${PORT}"
+        - "com.centurylinklabs.watchtower.enable=true"
+
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
