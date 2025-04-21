@@ -1,14 +1,13 @@
+version: '3.2'
+
 services:
   plex:
     image: lscr.io/linuxserver/plex
-    container_name: plex
+    hostname: plex
     volumes:
       - $CONFIG:/config
       - $MOVIES:/data/movies
       - $SHOWS:/data/tv
-    restart: unless-stopped
-    ports:
-      - "32400:32400"
     environment:
       - PUID=1000
       - PGID=1000
@@ -17,15 +16,19 @@ services:
       - PLEX_CLAIM=$TOKEN
     devices:
       - "/dev/dri:/dev/dri"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.plex.rule=Host(${HOST})"
-      - "traefik.http.routers.plex.entrypoints=websecure"
-      - "traefik.http.routers.plex.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.plex-traefik.loadbalancer.server.port=32400"
-      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.plex.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.plex.entrypoints=websecure"
+        - "traefik.http.routers.plex.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.plex-traefik.loadbalancer.server.port=32400"
+        - "com.centurylinklabs.watchtower.enable=true"
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
