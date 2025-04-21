@@ -4,7 +4,6 @@ services:
   romm:
     image: rommapp/romm:latest
     hostname: romm
-    restart: unless-stopped
     user: 1000:1000
     environment:
       - TZ=Europe/Madrid
@@ -43,12 +42,12 @@ services:
     hostname: romm-db
     user: 1000:1000
     environment:
+      - MARIADB_ROOT_PASSWORD=$ADMIN_PASSWORD
+      - MARIADB_DATABASE=$DB
+      - MARIADB_USER=$USER
+      - MARIADB_PASSWORD=$PASSWORD
       - PUID=1000
       - PGID=1000
-      - MYSQL_ROOT_PASSWORD=$ADMIN_PASSWORD
-      - MYSQL_DATABASE=$DB
-      - MYSQL_USER=$USER
-      - MYSQL_PASSWORD=$PASSWORD
     volumes:
       - $DB_DATA:/config
     deploy:
