@@ -1,39 +1,52 @@
-version: '3'
+version: '3.2'
 
 services:
-  web:
-    container_name: nextcloud
-    image: nextcloud:21.0.2
-    restart: unless-stopped
+  nextcloud:
+    hostname: nextcloud
+    image: nextcloud
+    user: 1000:1000
     depends_on:
       - db
-    ports:
-      - "4445:80"
     volumes:
-      - /media/javi/disco/nextcloud:/var/www/html
+      - $DATA:/var/www/html
     environment:
-      - POSTGRES_HOST=postgre_nextcloud
-      - POSTGRES_DB=${DB}
-      - POSTGRES_USER=${USER}
-      - POSTGRES_PASSWORD=${PASSWORD}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nextcloud.rule=Host(${HOST})"
-      - "traefik.http.routers.nextcloud.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.nextcloud-traefik.loadbalancer.server.port=80"
-      - "com.centurylinklabs.watchtower.enable=true"
+      - MYSQL_HOST=mariadb_nextcloud
+      - MYSQL_DATABASE=${DB}
+      - MYSQL_USER=${USER}
+      - MYSQL_PASSWORD=${PASSWORD}
+      - TRUSTED_PROXIES=${HOST}
+      - PUID=1000
+      - PGID=1000
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.nextcloud.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.nextcloud.entrypoints=websecure"
+        - "traefik.http.routers.nextcloud.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
+        - "com.centurylinklabs.watchtower.enable=true"
   db:
-    container_name: postgre_nextcloud
-    image: postgres
-    restart: unless-stopped
-    environment:
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_USER=${USER}
-      - POSTGRES_DB=${DB}
+    image: mariadb:10.6
+    hostname: mariadb_nextcloud
+    user: 1000:1000
     volumes:
       - $DB_DATA:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${PASSWORD}
+      - MYSQL_DATABASE=${DB}
+      - MYSQL_USER=${USER}
+      - PUID=1000
+      - PGID=1000
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
