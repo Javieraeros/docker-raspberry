@@ -1,0 +1,32 @@
+version: '3.2'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts 
+    hostname: jenkins
+    user: 1000:1000
+    volumes:
+      - $JENKINS_DATA:/var/jenkins_home
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.jenkins.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.jenkins.entrypoints=websecure"
+        - "traefik.http.routers.jenkins.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.jenkins.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+  ssh-agent:
+    image: jenkins/ssh-agent
+    hostname: ssh-agent
+    user: 1000:1000
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+
+networks:
+  default:
+    external:
+      name: traefik_default
