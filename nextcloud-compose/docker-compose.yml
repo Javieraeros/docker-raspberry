@@ -9,6 +9,7 @@ services:
       - db
     volumes:
       - $DATA:/var/www/html
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - MYSQL_HOST=mariadb_nextcloud
       - MYSQL_DATABASE=${DB}
@@ -26,6 +27,7 @@ services:
         - "traefik.http.routers.nextcloud.rule=Host(`${HOST}`)"
         - "traefik.http.routers.nextcloud.entrypoints=websecure"
         - "traefik.http.routers.nextcloud.tls.certresolver=letsEncrypt"
+        - "traefik.http.routers.nextcloud.middlewares=chain-nextcloud@file"
         - "traefik.http.services.nextcloud.loadbalancer.server.port=80"
         - "com.centurylinklabs.watchtower.enable=true"
   db:
@@ -34,6 +36,7 @@ services:
     user: 1000:1000
     volumes:
       - $DB_DATA:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
     environment:
       - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
       - MYSQL_PASSWORD=${PASSWORD}
