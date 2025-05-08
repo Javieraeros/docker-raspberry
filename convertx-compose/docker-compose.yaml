@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+  convertx:
+    image: ghcr.io/c4illin/convertx
+    hostname: convertx
+    user: 1000:1000
+    volumes:
+      - $DATA:/app/data
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.convertx.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.convertx.entrypoints=websecure"
+        - "traefik.http.routers.convertx.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.convertx.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.hostname == $MACHINE
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
