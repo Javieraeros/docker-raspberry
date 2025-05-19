@@ -1,29 +1,35 @@
+version: '3.2'
+
 services:
   notemark:
     image: ghcr.io/enchant97/note-mark-aio
-    container_name: notemark
-    restart: unless-stopped
-    ports:
-      - $PORT:$PORT
+    hostname: notemark
+    user: 1000:1000
     volumes:
       - ${DATA}:/data
+      - /etc/localtime:/etc/localtime:ro
     environment:
+      TZ: Europe/Madrid
       JWT_SECRET: "${JWT}"
       CORS_ORIGINS: "https://${HOST}"
       ALLOW_SIGNUP: "false"
       PUID: 1000
       PGID: 1000
 
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.notemark.rule=Host(`${HOST}`)"
-      - "traefik.http.routers.notemark.entrypoints=websecure"
-      - "traefik.http.routers.notemark.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.notemark-traefik.loadbalancer.server.port=${PORT}"
-      - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.notemark.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.notemark.entrypoints=websecure"
+        - "traefik.http.routers.notemark.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.notemark-traefik.loadbalancer.server.port=${PORT}"
+        - "com.centurylinklabs.watchtower.enable=true"
 
 
 networks:
   default:
     external:
-      name: traefik-compose_default
+      name: traefik_default
