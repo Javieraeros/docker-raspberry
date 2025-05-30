@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   joplin:
-    image: florider89/joplin-server:latest
+    image: joplin/server:arm64-latest
     hostname: joplin
     ports:
       - target: $PORT
