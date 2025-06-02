@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ee:nightly
+    hostname: gitlab
+    ports:
+      - target: 22
+        published: 2424
+        mode: host
+    volumes:
+      - $GITLAB_HOME/data:/var/opt/gitlab
+      - $GITLAB_HOME/logs:/var/log/gitlab
+      - $GITLAB_HOME/config:/etc/gitlab
+    environment:
+      GITLAB_OMNIBUS_CONFIG: "from_file('/omnibus_config.rb')"
+      PUID: 1000
+      PGID: 1000
+    configs:
+      - source: gitlab
+        target: /omnibus_config.rb
+    secrets:
+      - gitlab_root_password
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.gitlab.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.gitlab.entrypoints=websecure"
+        - "traefik.http.routers.gitlab.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.gitlab.loadbalancer.server.port=80"
+      placement:
+        constraints:
+          - node.role != manager
+configs:
+  gitlab:
+    file: ./gitlab.rb
+secrets:
+  gitlab_root_password:
+    file: ./root_password.txt
+
+networks:
+  default:
+    external:
+      name: traefik_default
