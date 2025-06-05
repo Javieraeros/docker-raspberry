@@ -4,7 +4,7 @@ services:
   immich-server:
     hostname: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-    user: 1000:1000
+#    user: 1000:1000
     env_file:
       - .env
     volumes:
@@ -28,8 +28,8 @@ services:
 
   redis:
     hostname: immich_redis
-    image: docker.io/redis:6.2-alpine@sha256:148bb5411c184abd288d9aaed139c98123eeb8824c5d3fce03cf721db58066d8
-    user: 1000:1000
+    image: docker.io/valkey/valkey:8-bookworm@sha256:a19bebed6a91bd5e6e2106fef015f9602a3392deeb7c9ed47548378dcee3dfc2 
+#    user: 1000:1000
     env_file:
       - .env
     healthcheck:
