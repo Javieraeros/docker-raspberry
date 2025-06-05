@@ -1,0 +1,36 @@
+version: '3.3'
+
+services:
+  gitea:
+    image: docker.gitea.com/gitea:1.23.8-rootless
+    hostname: gitea
+    volumes:
+      - $DATA:/var/lib/gitea
+      - $CONFIG:/etc/gitea
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - target: 3000
+        published: 3000
+        mode: host
+      - target: 2222
+        published: 2424
+        mode: host
+    environment:
+      DISABLE_REGISTRATION: "true"
+      RUN_MODE: "prod"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.gitea.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.gitea.entrypoints=websecure"
+        - "traefik.http.routers.gitea.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+      placement:
+        constraints:
+          - node.role != manager
+
+networks:
+  default:
+    external:
+      name: traefik_default
