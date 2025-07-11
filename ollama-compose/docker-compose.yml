@@ -1,0 +1,39 @@
+version: "3.2"
+
+services:
+  ollama:
+    image: ollama/ollama:rocm
+    container_name: ollama
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "$OLLAMA:/root/.ollama"
+    devices:
+      - "/dev/dri:/dev/dri"
+      - "/dev/kfd:/dev/kfd"
+    ports:
+      - 11434:11434
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    depends_on:
+      - ollama
+    container_name: open-webui
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - "$OPEN_WEBUI:/app/backend/data"
+      - "$OLLAMA:/root/.ollama"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ollama-secure.rule=Host(`${HOST}`)"
+      - "traefik.http.routers.ollama-secure.entrypoints=websecure"
+      - "traefik.http.routers.ollama-secure.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.ollama-traefik.loadbalancer.server.port=8080"
+
+networks:
+  default:
+    external:
+      name: traefik-compose_default

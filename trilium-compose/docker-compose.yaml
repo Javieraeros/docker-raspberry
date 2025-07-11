@@ -1,0 +1,31 @@
+version: '3.2'
+
+services:
+  trilium:
+    image: triliumnext/notes:latest 
+    hostname: trilium
+    environment:
+      - TRILIUM_DATA_DIR=/home/node/trilium-data
+      - TRILIUM_UID=1000
+      - TRILIUM_GID=1000
+    volumes:
+      - ${DATA_PATH}:/home/node/trilium-data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.trilium.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.trilium.entrypoints=websecure"
+        - "traefik.http.routers.trilium.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.trilium.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
+
