@@ -1,0 +1,33 @@
+version: '3.2'
+
+services:
+  tududi:
+    image: chrisvel/tududi
+    hostname: tududi
+    user: 1000:1000
+    environment:
+      TUDUDI_USER_EMAIL: "$TUDUDI_USER_EMAIL"
+      TUDUDI_USER_PASSWORD: "$TUDUDI_USER_PASSWORD"
+      TUDUDI_SESSION_SECRET: "$TUDUDI_SESSION_SECRET"
+      TUDUDI_INTERNAL_SSL_ENABLED: "$TUDUDI_INTERNAL_SSL_ENABLED"
+      TUDUDI_ALLOWED_ORIGINS: "$TUDUDI_ALLOWED_ORIGINS"
+    volumes:
+      - "$DB_PATH:/app/backend/db"
+      - "$UPLOADS_PATH:/app/backend/uploads"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.tududi.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.tududi.entrypoints=websecure"
+        - "traefik.http.routers.tududi.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.tududi.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
+
