@@ -58,8 +58,6 @@ services:
       - $SONARR:/config
       - $SHOWS:/tv #optional
       - $DOWNLOADS:/downloads #optional
-    ports:
-      - 8989:8989
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -81,8 +79,6 @@ services:
       - ${RADARR}:/config
       - ${FILMS}:/movies #optional
       - $DOWNLOADS:/downloads #optional
-    ports:
-      - 7878:7878
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
@@ -104,8 +100,6 @@ services:
       - $BAZARR:/config
       - $FILMS:/movies
       - $SHOWS:/tv
-    ports:
-      - 6767:6767
     restart: unless-stopped  
     labels:
       - "traefik.enable=true"
@@ -125,8 +119,6 @@ services:
     volumes:
       - ${JACKETT}:/config
       - ${DOWNLOADS}:/downloads
-    ports:
-      - 9117:9117
     restart: unless-stopped
     labels:
       - "traefik.enable=true"

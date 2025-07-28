@@ -12,8 +12,6 @@ services:
     devices:
       - "/dev/dri:/dev/dri"
       - "/dev/kfd:/dev/kfd"
-    ports:
-      - 11434:11434
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     depends_on:
