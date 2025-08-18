@@ -1,0 +1,31 @@
+version: '3.2'
+
+services:
+  glass-keep:
+    image: nikunjsingh/glass-keep:latest
+    hostname: glass-keep
+    user: 1000:1000
+    environment:
+      NODE_ENV: production
+      API_PORT: $PORT
+      JWT_SECRET: asdf9asdmlw90123!.sadf09134emaswdf09
+      DB_FILE: /app/data/notes.db
+      ADMIN_EMAILS: fjruiz.1992@gmail.com
+    volumes: 
+      - $DATA_PATH:/app/data
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.glass-keep.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.glass-keep.entrypoints=websecure"
+        - "traefik.http.routers.glass-keep.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.glass-keep.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
