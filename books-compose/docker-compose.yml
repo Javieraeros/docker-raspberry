@@ -26,8 +26,9 @@ services:
         - "com.centurylinklabs.watchtower.enable=true"
   
   readarr:
-    image: lscr.io/linuxserver/readarr:develop
+    image: ghcr.io/faustvii/readarr
     hostname: readarr
+    user: 1000:1000
     environment:
       - PUID=1000
       - PGID=1000
