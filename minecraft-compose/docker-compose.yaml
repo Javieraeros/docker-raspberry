@@ -6,21 +6,30 @@ services:
     tty: true
     stdin_open: true
     hostname: minecraft
+    ports:
+      - target: 25565
+        published: 25565
+        mode: host
     environment:
       EULA: "TRUE"
       INIT_MEMORY: 1G
       MAX_MEMORY: 6G
+      ONLINE_MODE: "FALSE"
+      ENABLE_ROLLING_LOGS: "TRUE"
+      DIFFICULTY: "NORMAL"
+      RCON_PASSWORD: "${PASSWORD}"
+      ENABLE_WHITELIST: "TRUE"
     volumes:
       - $DATA:/data
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.minecraft.rule=Host(`${HOST}`)"
-        - "traefik.http.routers.minecraft.entrypoints=websecure"
-        - "traefik.http.routers.minecraft.tls.certresolver=letsEncrypt"
-        - "traefik.http.services.minecraft.loadbalancer.server.port=$PORT"
+        - "traefik.enable=false"
+        - "traefik.tcp.routers.minecraft.rule=HostSNI(`${HOST}`)"
+        - "traefik.tcp.routers.minecraft.entrypoints=websecure"
+        - "traefik.tcp.routers.minecraft.tls.certresolver=letsEncrypt"
+        - "traefik.tcp.services.minecraft.loadbalancer.server.port=$PORT"
       placement:
         constraints:
           - node.hostname == $MACHINE
