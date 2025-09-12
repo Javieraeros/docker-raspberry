@@ -20,7 +20,6 @@ services:
   ssh-agent:
     image: jenkins/ssh-agent
     hostname: ssh-agent
-    user: 1000:1000
     deploy:
       placement:
         constraints:
