@@ -15,7 +15,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == rpi5
+          - node.role != manager
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.homepage.rule=Host(`${HOST}`)"

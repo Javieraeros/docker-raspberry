@@ -15,7 +15,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == raspberrypi
+          - node.role != manager
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.kuma.rule=Host(`${HOST}`)"

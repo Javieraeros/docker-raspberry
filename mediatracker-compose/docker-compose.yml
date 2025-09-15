@@ -19,7 +19,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.hostname == $MACHINE
+          - node.role != manager
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.mediatracker.rule=Host(`${HOST}`)"
