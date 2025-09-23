@@ -14,7 +14,8 @@ services:
         published: 3000
         mode: host
       - target: 2222
-        published: 2424
+        published: 2222
+        protocol: tcp
         mode: host
     environment:
       DISABLE_REGISTRATION: "true"
@@ -26,6 +27,11 @@ services:
         - "traefik.http.routers.gitea.entrypoints=websecure"
         - "traefik.http.routers.gitea.tls.certresolver=letsEncrypt"
         - "traefik.http.services.gitea.loadbalancer.server.port=3000"
+
+        - "traefik.tcp.routers.gitea-ssh.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.gitea-ssh.entrypoints=gitea_ssh"
+        - "traefik.tcp.routers.gitea-ssh.service=gitea-ssh-svc"
+        - "traefik.tcp.services.gitea-ssh-svc.loadbalancer.server.port=2222"
       placement:
         constraints:
           - node.role != manager
