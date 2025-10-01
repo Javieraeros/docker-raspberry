@@ -35,7 +35,7 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - ${READARR_CONFIG}:/config
-      - ${BOOKS}:/books 
+      - ${BOOKS}/books:/books 
       - ${DOWNLOADS}:/downloads
     deploy:
       placement:

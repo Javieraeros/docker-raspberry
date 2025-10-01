@@ -24,7 +24,7 @@ services:
         - "traefik.http.routers.docmost.rule=Host(`${HOST}`)"
         - "traefik.http.routers.docmost.entrypoints=websecure"
         - "traefik.http.routers.docmost.tls.certresolver=letsEncrypt"
-        - "traefik.http.services.traefik-docmost.loadbalancer.server.port=$PORT"
+        - "traefik.http.services.docmost.loadbalancer.server.port=$PORT"
       placement:
         constraints:
           - node.role != manager

@@ -1,0 +1,29 @@
+version: '3.2'
+
+services:
+  nexus:
+    image: sonatype/nexus3
+    hostname: nexus
+    user: 1000:1000
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - "$CONFIG_PATH:/nexus-data"
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.nexus.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.nexus.entrypoints=websecure"
+        - "traefik.http.routers.nexus.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.nexus.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role == manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
