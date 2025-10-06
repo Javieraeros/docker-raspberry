@@ -2,15 +2,15 @@ version: '3.2'
 
 services:
   nexus:
-    image: sonatype/nexus3
+    image: sonatype/nexus
     hostname: nexus
     user: 1000:1000
     environment:
-      - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=1000
+      TZ: "Europe/Madrid"
+      MAX_HEAP: "512m"
+      MIN_HEAP: "64m"
     volumes:
-      - "$CONFIG_PATH:/nexus-data"
+      - "$CONFIG_PATH:/sonatype-work"
     deploy:
       labels:
         - "traefik.enable=true"
