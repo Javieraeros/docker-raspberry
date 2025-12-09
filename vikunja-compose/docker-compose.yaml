@@ -1,0 +1,30 @@
+version: '3.2'
+
+services:
+  vikunja:
+    image: vikunja/vikunja
+    hostname: vikunja
+    environment:
+      VIKUNJA_SERVICE_JWTSECRET: $SECRET
+      VIKUNJA_SERVICE_PUBLICURL: https://${HOST}/
+      VIKUNJA_DATABASE_PATH: /db/vikunja.db
+      TZ: Europe/Madrid
+    volumes:
+      - $CONFIG_PATH:/app/vikunja/files
+      - $DATABASE_PATH:/db
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.vikunja.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.vikunja.entrypoints=websecure"
+        - "traefik.http.routers.vikunja.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.vikunja.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
