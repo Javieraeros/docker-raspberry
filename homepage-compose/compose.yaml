@@ -4,18 +4,18 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     hostname: homepage
-    restart: unless-stopped
     volumes:
-      - ${CONFIG_PATH}:/app/config
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ${DISK_1}:/disk1:ro
-      - ${DISK_2}:/disk2:ro
+      - "${CONFIG_PATH}:/app/config"
+      - "${DISK_2}:/disk2:ro"
+      - "${DISK_3}:/disk3:ro"
+      - "${DISK_1}:/disk1:ro"
     environment:
       HOMEPAGE_ALLOWED_HOSTS: $HOST
+      TZ: Europe/Madrid
     deploy:
       placement:
         constraints:
-          - node.role != manager
+          - node.hostname == $MACHINE
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.homepage.rule=Host(`${HOST}`)"

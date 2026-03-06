@@ -26,7 +26,7 @@ services:
         - "com.centurylinklabs.watchtower.enable=true"
   
   readarr:
-    image: ghcr.io/faustvii/readarr
+    image: ghcr.io/faustvii/readarr:latest
     hostname: readarr
     user: 1000:1000
     environment:

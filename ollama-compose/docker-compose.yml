@@ -1,5 +1,3 @@
-version: "3.2"
-
 services:
   ollama:
     image: ollama/ollama:rocm
@@ -10,8 +8,10 @@ services:
     volumes:
       - "$OLLAMA:/root/.ollama"
     devices:
-      - "/dev/dri:/dev/dri"
-      - "/dev/kfd:/dev/kfd"
+      - /dev/dri
+      - /dev/kfd
+    group_add:
+      - video
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
     depends_on:
