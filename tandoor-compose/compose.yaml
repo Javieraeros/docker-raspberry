@@ -1,0 +1,40 @@
+version: '3.2'
+
+services:
+  tandoor_web:
+    image: vabene1111/recipes:latest
+    hostname: tandoor
+#    user: 1000:1000
+    volumes:
+      - $STATIC_DATA:/opt/recipes/staticfiles
+      - $MEDIA_DATA:/opt/recipes/mediafiles
+    env_file:
+      - ./.env
+    depends_on:
+      - tandoor_db
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.tandoor.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.tandoor.entrypoints=websecure"
+        - "traefik.http.routers.tandoor.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.tandoor.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+  tandoor_db:
+    image: postgres:16-alpine
+    hostname: tandoor_db 
+    volumes:
+      - $POSTGRES_DATA:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+
+networks:
+  default:
+    external:
+      name: traefik_default
