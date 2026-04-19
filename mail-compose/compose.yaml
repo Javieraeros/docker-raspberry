@@ -1,0 +1,54 @@
+version: '3.3'
+
+services:
+  mail:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    hostname: $HOST
+    env_file: .env
+    volumes:
+      - $DATA/data/:/var/mail/
+      - $DATA/state/:/var/mail-state/
+      - $DATA/logs/:/var/log/mail/
+      - $DATA/config/:/tmp/docker-mailserver/
+      - $ACME:/etc/letsencrypt/acme.json:ro
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      labels:
+        - "traefik.enable=true"
+
+        - "traefik.tcp.routers.mail-smtp.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.mail-smtp.entrypoints=mail-smtp"
+        - "traefik.tcp.routers.mail-smtp.service=mail-smtp"
+        - "traefik.tcp.services.mail-smtp.loadbalancer.server.port=25"
+
+        - "traefik.tcp.routers.mail-submission.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.mail-submission.entrypoints=mail-submission"
+        - "traefik.tcp.routers.mail-submission.service=mail-submission"
+        - "traefik.tcp.services.mail-submission.loadbalancer.server.port=587"
+
+        - "traefik.tcp.routers.mail-submissions.rule=HostSNI(`${HOST}`)"
+        - "traefik.tcp.routers.mail-submissions.tls.passthrough=true"
+        - "traefik.tcp.routers.mail-submissions.entrypoints=mail-submissions"
+        - "traefik.tcp.routers.mail-submissions.service=mail-submissions"
+        - "traefik.tcp.services.mail-submissions.loadbalancer.server.port=465"
+
+        - "traefik.tcp.routers.mail-imaps.rule=HostSNI(`${HOST}`)"
+        - "traefik.tcp.routers.mail-imaps.tls.passthrough=true"
+        - "traefik.tcp.routers.mail-imaps.entrypoints=mail-imaps"
+        - "traefik.tcp.routers.mail-imaps.service=mail-imaps"
+        - "traefik.tcp.services.mail-imaps.loadbalancer.server.port=993"
+
+        - "traefik.tcp.routers.mail-pop3s.rule=HostSNI(`${HOST}`)"
+        - "traefik.tcp.routers.mail-pop3s.tls.passthrough=true"
+        - "traefik.tcp.routers.mail-pop3s.entrypoints=mail-pop3s"
+        - "traefik.tcp.routers.mail-pop3s.service=mail-pop3s"
+        - "traefik.tcp.services.mail-pop3s.loadbalancer.server.port=995"
+
+      placement:
+        constraints:
+          - node.role == $ROLE
+
+networks:
+  default:
+    external:
+      name: traefik_default
