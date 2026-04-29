@@ -1,14 +1,17 @@
 services:
   ollama:
-    image: ollama/ollama:rocm
+    image: ollama/ollama:latest
     container_name: ollama
     restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
+      - OLLAMA_DEBUG=1
+      - OLLAMA_VULKAN=1
     volumes:
       - "$OLLAMA:/root/.ollama"
     devices:
-      - /dev/dri
+      - /dev/dri/card0
+      - /dev/dri/renderD128
       - /dev/kfd
     group_add:
       - video
@@ -26,10 +29,10 @@ services:
       - "$OLLAMA:/root/.ollama"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ollama-secure.rule=Host(`${HOST}`)"
-      - "traefik.http.routers.ollama-secure.entrypoints=websecure"
-      - "traefik.http.routers.ollama-secure.tls.certresolver=letsEncrypt"
-      - "traefik.http.services.ollama-traefik.loadbalancer.server.port=8080"
+      - "traefik.http.routers.openwebui-secure.rule=Host(`${HOST_WEB}`)"
+      - "traefik.http.routers.openwebui-secure.entrypoints=websecure"
+      - "traefik.http.routers.openwebui-secure.tls.certresolver=letsEncrypt"
+      - "traefik.http.services.openwebui-traefik.loadbalancer.server.port=8080"
 
 networks:
   default:

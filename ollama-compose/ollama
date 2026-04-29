@@ -1,0 +1,22 @@
+#!/bin/sh
+
+start() { 
+    docker exec -it ollama ollama run $1
+}
+
+serve() { 
+    docker exec -it ollama ollama serve $1
+}
+stop() {
+    docker exec ollama ollama stop $1
+}
+
+pull() {
+    docker exec ollama ollama pull $1
+}
+
+list() {
+    docker exec ollama ollama list
+}
+
+"$@"
