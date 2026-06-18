@@ -4,7 +4,7 @@ services:
   immich-server:
     hostname: immich_server
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-#    user: 1000:1000
+    user: 1000:1000
     env_file:
       - .env
     volumes:
@@ -29,7 +29,7 @@ services:
   redis:
     hostname: immich_redis
     image: docker.io/valkey/valkey:8-bookworm@sha256:a19bebed6a91bd5e6e2106fef015f9602a3392deeb7c9ed47548378dcee3dfc2 
-#    user: 1000:1000
+    user: 1000:1000
     env_file:
       - .env
     healthcheck:
@@ -43,7 +43,7 @@ services:
   database:
     hostname: immich_postgres
     image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0@sha256:739cdd626151ff1f796dc95a6591b55a714f341c737e27f045019ceabf8e8c52
-    user: 1000:1000
+#    user: 1000:1000
     env_file:
       - .env
     environment:

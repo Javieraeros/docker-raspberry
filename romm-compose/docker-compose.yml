@@ -22,6 +22,7 @@ services:
       - $RESOURCES:/romm/resources 
       - $REDIS:/redis-data 
       - $GAMES:/romm/library/roms 
+      - $BIOS:/romm/library/bios
       - $ASSETS:/romm/assets 
       - $CONFIG:/romm/config 
     depends_on:
