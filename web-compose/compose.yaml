@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+  nginx:
+    image: lscr.io/linuxserver/nginx:latest 
+    hostname: nginx
+    volumes:
+      - ./index.html:/var/www/index.html
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.nginx.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.nginx.entrypoints=websecure"
+        - "traefik.http.routers.nginx.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.nginx.loadbalancer.server.port=$PORT"
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
