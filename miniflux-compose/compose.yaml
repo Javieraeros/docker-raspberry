@@ -1,0 +1,45 @@
+version: '3.2'
+
+services:
+  miniflux:
+    image: docker.io/miniflux/miniflux:latest
+    hostname: miniflux
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=disable       
+      - RUN_MIGRATIONS=1
+#      - CREATE_ADMIN=1
+#      - ADMIN_USERNAME=$ADMIN_USERNAME
+#      - ADMIN_PASSWORD=$ADMIN_PASSWORD
+      - BASE_URL=https://$HOST
+      - TZ=Europe/Madrid
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.change.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.change.entrypoints=websecure"
+        - "traefik.http.routers.change.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.change.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+  db:
+    image: postgres:latest
+    hostname: db
+    user:  1000:1000
+    environment:
+      - POSTGRES_USER=$DB_USERNAME
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+      - POSTGRES_DB=$DB_NAME
+    volumes:
+      - $DB_DATA_LOCATION:/var/lib/postgresql
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+
+networks:
+  default:
+    external:
+      name: traefik_default
