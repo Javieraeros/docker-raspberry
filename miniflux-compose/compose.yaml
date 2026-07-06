@@ -7,13 +7,16 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=disable       
+      - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=disable  
       - RUN_MIGRATIONS=1
 #      - CREATE_ADMIN=1
 #      - ADMIN_USERNAME=$ADMIN_USERNAME
 #      - ADMIN_PASSWORD=$ADMIN_PASSWORD
       - BASE_URL=https://$HOST
-      - TZ=Europe/Madrid
+      - DEBUG=1
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     deploy:
       labels:
         - "traefik.enable=true"
@@ -34,6 +37,8 @@ services:
       - POSTGRES_DB=$DB_NAME
     volumes:
       - $DB_DATA_LOCATION:/var/lib/postgresql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     deploy:
       placement:
         constraints:
