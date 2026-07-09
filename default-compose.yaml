@@ -5,6 +5,9 @@ services:
     image: 
     hostname: change
     user: 1000:1000
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     deploy:
       labels:
         - "traefik.enable=true"
