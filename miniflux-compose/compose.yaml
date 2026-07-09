@@ -7,7 +7,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=disable  
+      - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@db/${DB_NAME}?sslmode=disable  
       - RUN_MIGRATIONS=1
 #      - CREATE_ADMIN=1
 #      - ADMIN_USERNAME=$ADMIN_USERNAME
