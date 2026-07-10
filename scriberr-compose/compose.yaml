@@ -1,0 +1,32 @@
+version: '3.2'
+
+services:
+  scriberr:
+    image: ghcr.io/rishikanthc/scriberr:latest
+    hostname: scriberr
+    user: 1000:1000
+    volumes:
+      - $DATA_LOCATION:/app/data
+      - $ENV_LOCATION:/app/whisperx-env
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - APP_ENV=production
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.scriberr.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.scriberr.entrypoints=websecure"
+        - "traefik.http.routers.scriberr.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.scriberr.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role == manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
