@@ -1,0 +1,75 @@
+version: '3.2'
+
+services:
+  owncloud:
+    image: owncloud/server:10.16
+    hostname: owncloud
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $DATA:/mnt/data
+    environment:
+      - OWNCLOUD_DOMAIN=${HOST}
+      - OWNCLOUD_TRUSTED_DOMAINS=${HOST}
+      - OWNCLOUD_DB_TYPE=mysql
+      - OWNCLOUD_DB_NAME=$DB
+      - OWNCLOUD_DB_USERNAME=$USER
+      - OWNCLOUD_DB_PASSWORD=$PASSWORD
+      - OWNCLOUD_DB_HOST=mariadb
+      - OWNCLOUD_ADMIN_USERNAME=${ADMIN}
+      - OWNCLOUD_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - OWNCLOUD_MYSQL_UTF8MB4=true
+      - OWNCLOUD_REDIS_ENABLED=true
+      - OWNCLOUD_REDIS_HOST=redis
+    depends_on:
+      - mariadb
+      - redis
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.owncloud.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.owncloud.entrypoints=websecure"
+        - "traefik.http.routers.owncloud.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.owncloud.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+
+  mariadb:
+    image: mariadb:10.11
+    hostname: mariadb
+    user: 1000:1000
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $DB_DATA:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=$PASSWORD
+      - MYSQL_USER=$USER
+      - MYSQL_PASSWORD=$PASSWORD
+      - MYSQL_DATABASE=$DB
+      - MARIADB_AUTO_UPGRADE=1
+    command: ["--max-allowed-packet=128M", "--innodb-log-file-size=64M"]
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+
+  redis:
+    image: redis:6
+    hostname: redis
+    user: 1000:1000
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $REDIS_DATA:/data
+    command: ["--databases", "1"]
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+
+networks:
+  default:
+    external:
+      name: traefik_default
