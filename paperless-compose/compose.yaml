@@ -1,0 +1,71 @@
+version: '3.2'
+
+services:
+  redis:
+    image: docker.io/library/redis:8
+    hostname: redis
+    user: 1000:1000
+    volumes:
+      - $REDIS_DATA:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+
+  db:
+    image: docker.io/library/postgres:18
+    hostname: db
+    user: 1000:1000
+    volumes:
+      - $DB_DATA:/var/lib/postgresql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      POSTGRES_DB: $DB
+      POSTGRES_USER: $USER
+      POSTGRES_PASSWORD: $PASSWORD
+    deploy:
+      placement:
+        constraints:
+          - node.role != manager
+
+  paperless:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    hostname: paperless
+    depends_on:
+      - db
+      - redis
+    user: 1000:1000
+    env_file: .env
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - $DATA/data:/usr/src/paperless/data
+      - $DATA/media:/usr/src/paperless/media
+      - $DATA/export:/usr/src/paperless/export
+      - $DATA/consume:/usr/src/paperless/consume
+    environment:
+      PUID: 1000
+      PGID: 1000
+      PAPERLESS_REDIS: redis://redis:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBUSER: $USER
+      PAPERLESS_DBPASS: $PASSWORD
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.paperless.rule=Host(`${HOST}`)"
+        - "traefik.http.routers.paperless.entrypoints=websecure"
+        - "traefik.http.routers.paperless.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.paperless.loadbalancer.server.port=$PORT"
+      placement:
+        constraints:
+          - node.role != manager
+
+
+networks:
+  default:
+    external:
+      name: traefik_default
